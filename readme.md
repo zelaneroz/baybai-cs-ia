@@ -7,6 +7,8 @@ Baybayin (ᜊᜌ᜔ᜊᜌᜒᜈ᜔) is one of the precolonial writing systems us
 
 A teacher in a public high school in the Philippines teaching Tagalog, wants to help revive Baybayin by teaching the script to his students. Internet and desktop access is difficult for his students given the costs that come with mobile data plans, Wi-Fi, and laptops.  It's also difficult for students to remember the script outside of a classroom setting given that Baybayin is not used by anyone outside of a certain niche. With this, it's important for students to have a translator to apply the script in real-life context. To add, like learning any language, consistent practice is crucial and practice should involve writing and memorizing characters. 
 
+Photos of client interview are seen in [Appendix A](#ap-a).
+
 ## Success Criteria
 1. The solution is a mobile application that's accessible offline and provides a way for users to learn Baybayin using flashcards based on spaced repetition.
 2. The application has three modalities: learning mode, test mode, and translator.
@@ -17,6 +19,7 @@ A teacher in a public high school in the Philippines teaching Tagalog, wants to 
 
 
 ## Design Statement
+
 
 ## Rationale for Proposed Solution
 
@@ -44,3 +47,14 @@ A teacher in a public high school in the Philippines teaching Tagalog, wants to 
 | Test No | Test Type                                                                                            | Date   | Procedure                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Expected Outcome                                                                                                                                                                                                                                                                                    |
 |---------|------------------------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
 | 1       | Functional: Test  whether the SignUp screen succesfully registers new user if all entries are valid. | Feb 18 | Run python file (spentio.py). Go to sign up screen and enter the following values: <br/>- email: bob@isak<br/>- username: bob<br/>-password: bob123                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | When the database, spentio.db is checked, a new row of data can be seen. This row shows the entered email, username, and password encrypted using a certain hash.                                                                                                                                   |
+
+
+
+# Appendix
+## <a id="ap-a"> Appendix A. Client Interview </a>
+![](docu/email_1.png)
+![](docu/twt1.jpg)
+![](docu/twt2.jpg)
+
+
+
