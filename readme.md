@@ -5,26 +5,50 @@
 ## Problem Definition
 Baybayin (ᜊᜌ᜔ᜊᜌᜒᜈ᜔) is one of the precolonial writing systems used by early Filipinos as the writing component of Tagalog (national language). More than three centuries of Spanish colonization led to the replacement of Baybayin by the Latin alphabet.
 
-A teacher in a public high school in the Philippines teaching Tagalog, wants to help revive Baybayin by teaching the script to his students. Internet and desktop access is difficult for his students given the costs that come with mobile data plans, Wi-Fi, and laptops.  It's also difficult for students to remember the script outside of a classroom setting given that Baybayin is not used by anyone outside of a certain niche. According to the client, learning the script would be difficult without consistency and thus the app should encourage users to learn consistently. It's important for students to have a translator to apply the script in real-life context. To add, like learning any language, consistent practice is crucial and practice should involve writing and memorizing characters. 
+A teacher in a public high school in the Philippines aims to revive Baybayin by teaching the script to his students. Given that teaching Baybayin is not part of the curriculum and therefore is not allotted time, learning outside of class is vital. The client has tried to implement such kind of learning through homeworks, and a list of links of references but all to no avail. To add, internet and desktop access pose challenges as they are not readily available due to the costs associated with mobile data plans, Wi-Fi, and laptops. Students struggle to retain the script outside the classroom, given its limited usage outside a specific niche. The teacher emphasizes the importance of consistency in learning Baybayin, highlighting the need for an app that encourages regular practice. Additionally, a translator feature is essential for students to apply the script in real-life contexts. Furthermore, like any language, growth (through objective assessment) and consistent practice involving writing and memorizing characters are crucial for effective learning.
 
-Photos of client interview are seen in [Appendix A](#ap-a).
+## Proposed Solution
+The proposed solution to address the challenges faced by the teacher and students in learning Baybayin is a mobile application called 'baybai'. 'baybai' is designed to provide an accessible and engaging platform for learning the Baybayin script. Developed using Python and KivyMD, the app allows students to conveniently learn and practice Baybayin outside the classroom. It offers a comprehensive learning experience with interactive lessons, flashcards, and writing practice exercises. The app incorporates a spaced repetition system to ensure optimal retention and growth in learning. To address the limitations of internet and desktop access, 'baybai' operates offline, enabling students to learn without relying on costly data plans or Wi-Fi. The app includes a translator feature that allows users to easily translate Tagalog words and phrases into Baybayin characters, facilitating practical application in real-life contexts. Furthermore, 'baybai' tracks and measures students' progress through objective assessments, providing them with a clear understanding of their proficiency level and motivating them to strive for continuous improvement. With its user-friendly interface, comprehensive learning resources, and focus on consistency and growth, 'baybai' empowers students to revive and master the Baybayin script effectively.
+
+## Rationale for Proposed Solution
+
+**Mobile Application**
+* Accessibility: A mobile application ensures widespread accessibility for students, as mobile phones are the most accessible gadgets for them, considering factors like cost and availability of internet access[^1].
+* Portability: Students can conveniently learn Baybayin anytime and anywhere using their smartphones, making it a flexible and on-the-go learning solution.
+
+**Flashcards-Based Learning**
+* Effective Learning Technique: Flashcards are known for their effectiveness in promoting active recall and spaced repetition, aiding in long-term retention and comprehension (source: Association for Psychological Science).
+* Visual and Engaging: Flashcards provide visual cues, helping students associate Baybayin characters with their meanings, making the learning process more engaging and memorable.
+
+**Python and Kivy**
+* Cross-Platform Compatibility: Python, a versatile programming language, along with Kivy, a Python framework, allows for the development of cross-platform mobile applications, ensuring compatibility across various operating systems (source: Kivy documentation).
+* Easy to Learn and Use: Python's simple syntax and extensive libraries make it an ideal choice for developing mobile applications, while Kivy simplifies the process of building user interfaces and handling touch events (source: Python Software Foundation).
+
+**PyCharm**
+* Integrated Development Environment (IDE): PyCharm provides a powerful and user-friendly development environment for Python, offering features like code completion, debugging tools, and version control integration, enhancing productivity and facilitating efficient app development (source: JetBrains).
+* Python-Specific Support: PyCharm offers dedicated support for Python development, including syntax highlighting, code analysis, and refactoring tools, which contribute to the smooth development process and code quality.
+
+**SQLite**
+* Lightweight and Embedded Database: SQLite, being a self-contained database engine, allows for seamless integration within the mobile application without requiring separate installations or server configurations (source: SQLite website).
+* Efficient and Reliable: SQLite offers high-performance data storage and retrieval capabilities, ensuring smooth data management within the mobile application, including user progress tracking and storing translation data (source: SQLite documentation).
 
 ## Design Statement
-I will design and make a mobile application for a client who is a Tagalog teacher at a public high school in the Philippines. The application will allow users to learn Baybayin and have three main functionalities: learning mode, test mode, and translator. It will be developed using the Python programming language and the PyCharm Integrated Development Environment. It will take 4 weeks to make and will be evaluated according to the following success criteria.
+I will design and make a mobile application for a client who is a Tagalog teacher at a public high school in the Philippines. The application will allow users to learn Baybayin and have three main functionalities: learning mode, test mode, and translator. It will be developed using the Python programming language, KivyMD, and the PyCharm Integrated Development Environment. It will take 4 weeks to make and will be evaluated according to the following success criteria.
 
 
 ## Success Criteria
 
- No. | Success Criteria | Issue Tackled |
------|------------------|----------|
- 1   | The solution is a mobile application that's accessible offline and provides a way for users to learn Baybayin using flashcards based on spaced repetition.            | "Internet and desktop access is difficult for his students given the costs that come with mobile data plans, Wi-Fi, and laptops."         |
-| 2   | The app keeps track of the user's streaks and highest user streak to encourage consistency.            |  "According to the client, learning the script would be difficult without consistency and thus the app should encourage users to learn consistently."        |
-| 3   | The flashcards for learning mode enable writing/stroke practice and shows Baybayin characters and its corresponding Tagalog translation.            | "To add, like learning any language, consistent practice is crucial and practice should involve writing and memorizing characters."         |
-| 4   | 'Test mode' of the application tests the user by generating random Tagalog words and allowing the user to type in the corresponding Baybayin script.            |          |
-| 5   | The app enables Tagalog to Baybayin translation and allows the user to copy the Baybayin characters to their clipboard.            |"It's important for students to have a translator to apply the script in real-life context."|
-| 6   | The user's scores will be recorded and presented visually.             ||
+ No. | Success Criteria                                                                                                                                                               | Issue Tackled                                                                                                                                                    |
+-----|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+ 1   | The solution is a mobile application that's accessible offline and provides a way for users to learn Baybayin using flashcards based on spaced repetition.                     | "However, internet and desktop access pose challenges as they are not readily available due to the costs associated with mobile data plans, Wi-Fi, and laptops." |
+| 2   | The app keeps track of the user's streaks and highest user streak to encourage consistency.                                                                                    | "...highlighting the need for an app that encourages regular practice."                                                                                          |
+| 3   | The flashcards for learning mode enable writing/stroke practice and shows Baybayin characters and its corresponding Tagalog translation.                                       | "...consistent practice involving writing and memorizing characters is crucial for effective learning."                                                          |                                                                                                                                                                
+| 4   | The Test Mode will assess users' knowledge and proficiency in Baybayin. It will generate random Tagalog words, challenging users to type in the corresponding Baybayin script. | "...growth (through objective assessment)...are crucial for effective learning."                                                                                 |
+| 5   | The application will record users' scores on Test Mode and visually present their performance, allowing them to track their progress over time.                                |"...growth (through objective assessment)...are crucial for effective learning."                                 |
+| 6   | The app enables Tagalog to Baybayin translation and allows the user to copy the Baybayin characters to their clipboard.                                                        | "It's important for students to have a translator to apply the script in real-life context."                                                                     |
 
-## Rationale for Proposed Solution
+
+
 
 # Criteria B: Design
 ## Diagrams
@@ -59,5 +83,8 @@ I will design and make a mobile application for a client who is a Tagalog teache
 ![](docu/twt1.jpg)
 ![](docu/twt2.jpg)
 
+
+# Sources
+[^1]: https://kinsta.com/mobile-vs-desktop-market-share/#:~:text=To%20look%20at%20a%20similar,%2C%20and%202%25%20from%20tablet.
 
 
