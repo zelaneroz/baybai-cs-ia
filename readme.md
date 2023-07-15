@@ -32,7 +32,7 @@ The proposed solution to address the challenges faced by the teacher and student
 * Efficient and Reliable: SQLite offers high-performance data storage and retrieval capabilities, ensuring smooth data management within the mobile application, including user progress tracking and storing translation data[^6].
 
 ## Design Statement
-I will design and make a mobile application for a client who is a Tagalog teacher at a public high school in the Philippines. The application will allow users to learn Baybayin and have three main functionalities: learning mode, test mode, and translator. It will be developed using the Python programming language, KivyMD, and the PyCharm Integrated Development Environment. It will take 4 weeks to make and will be evaluated according to the following success criteria.
+I will design and make a mobile application for a client who is a Tagalog teacher at a public high school in the Philippines. The application will allow users to learn Baybayin and have three main functionalities: learning mode, test mode, and translator. It will be developed using the Python programming language, KivyMD, and the PyCharm Integrated Development Environment. It will take 8 weeks to make and will be evaluated according to the following success criteria.
 
 
 ## Success Criteria
@@ -53,6 +53,12 @@ I will design and make a mobile application for a client who is a Tagalog teache
 ## Diagrams
 ### System Diagrams
 ### Wireframes
+![](docu/ui_draft.png)
+Figure 1. Draft of the application's user interface created on Adobe XD
+
+
+![](docu/wireframe.png)
+Figure 2. Wireframe of the mobile application
 ### UML Diagram
 ### ER Diagram
 ### Flowcharts

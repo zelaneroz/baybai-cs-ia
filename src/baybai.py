@@ -5,6 +5,9 @@ from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.core.window import Window
+Window.size = (375,812)
+
 class LoginScreen(MDScreen):
     dialog=None
 
