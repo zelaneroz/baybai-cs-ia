@@ -1,16 +1,93 @@
 ScreenManager:
-    LoginScreen:
-        name: "LoginScreen"
+    HomeScreen:
+        name: "HomeScreen"
+    LearnScreen:
+        name: "LearnScreen"
+    TestScreen:
+        name: "TestScreen"
+    TranslateScreen:
+        name: "TranslateScreen"
+    StatsScreen:
+        name: "StatsScreen"
 
-<LoginScreen>:
-    BoxLayout:
-        orientation: 'vertical'
-        MDLabel:
-            text: 'Hello, World!'
-            halign: 'center'
-            theme_text_color: 'Secondary'
+<HomeScreen>:
+    MDBoxLayout:
+        orientation:'vertical'
+        spacing: 61
+
+        #red_1 (Upper half)
+        MDBoxLayout:
+            size_hint_y:258
+            orientation:'vertical'
+            #orange_1.1 (Logo + Daily Task)
+            MDLabel:
+                text: 'Logo'
+                md_bg_color: 'blue'
+                size_hint_y:0.43
+            MDCard:
+                md_bg_color: 'pink'
+                size_hint:0.8,0.57 #147
+                pos_hint:{"center_x":0.5,"center_y":0.5}
+                padding:
+                MDLabel:
+                    text: 'Daily Task'
 
 
-<MyBoxLayout@BoxLayout>:
-    size_hint: None, None
-    size: 375, 812
+        #red_2 (lower half)
+        MDBoxLayout:
+            size_hint_y:493
+            orientation: 'vertical'
+            spacing:53
+
+            MDBoxLayout:#orange_2.1 (Functions)
+                orientation:'vertical'
+                size_hint_y:0.85 #419PX
+                spacing: 14 #0.15
+                #blue_2.1 (Learn, Test)
+                MDBoxLayout: #231px
+                    size_hint: 0.81,0.55
+                    pos_hint:{"center_x":0.5,"center_y":0.5}
+                    orientation:'horizontal'
+                    spacing:20
+                    MDCard: #LEARN
+                        border_radius:20
+                        radius:[14]
+                        size_hint_x:0.38
+                        md_bg_color:'grey'
+                        MDLabel:
+                            text: 'Learn'
+                    MDCard: #TEST
+                        border_radius:20
+                        size_hint_x:0.38
+                        radius:[14]
+                        md_bg_color:'purple'
+                        MDLabel:
+                            text: 'Test'
+                #blue_2.2 (Translate)
+                MDCard:
+                    size_hint:0.81,0.3
+                    pos_hint:{"center_x":0.5,"center_y":0.5}
+                    md_bg_color:'violet'
+                    MDLabel:
+                        text:'Translate'
+
+
+            #orange_2.2 (NavBar)
+            MDBoxLayout:
+                size_hint_y:0.15
+
+                orientation:'horizontal'
+                pos_hint:{"center_x":0.5,"center_y":0.5}
+                MDLabel:
+                    text:'Home'
+                    halign:'center'
+                    md_bg_color:'blue'
+                MDLabel:
+                    text: 'Stats'
+                    md_bg_color:'pink'
+                    halign:'center'
+
+
+<LearnScreen>:
+    MDLabel:
+        text:'Learn Screen'
