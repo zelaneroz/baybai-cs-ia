@@ -54,6 +54,8 @@ ScreenManager:
                         radius:[14]
                         size_hint_x:0.38
                         md_bg_color:'grey'
+                        on_release:root.home2learn()
+                        
                         MDLabel:
                             text: 'Learn'
                     MDCard: #TEST
@@ -61,6 +63,7 @@ ScreenManager:
                         size_hint_x:0.38
                         radius:[14]
                         md_bg_color:'purple'
+                        on_release:root.home2test()
                         MDLabel:
                             text: 'Test'
                 #blue_2.2 (Translate)
@@ -68,26 +71,63 @@ ScreenManager:
                     size_hint:0.81,0.3
                     pos_hint:{"center_x":0.5,"center_y":0.5}
                     md_bg_color:'violet'
+                    on_release:root.home2translate()
                     MDLabel:
                         text:'Translate'
 
 
             #orange_2.2 (NavBar)
-            MDBoxLayout:
+            MDBottomNavigation:
                 size_hint_y:0.15
+                panel_color: 'green'
 
-                orientation:'horizontal'
-                pos_hint:{"center_x":0.5,"center_y":0.5}
-                MDLabel:
-                    text:'Home'
-                    halign:'center'
+                MDBottomNavigationItem:
+                    name: 'home'
+                    text: 'Home'
+                    icon:'home'
+                    size_hint_x:0.38
                     md_bg_color:'blue'
-                MDLabel:
+                    BoxLayout:
+                        orientation:'vertical'
+
+                MDBottomNavigationItem:
+                    name: 'stats'
                     text: 'Stats'
-                    md_bg_color:'pink'
-                    halign:'center'
+                    icon:'functions'
+                    size_hint_x:0.38
+                    BoxLayout:
+                        orientation:'vertical'
+
+
+#            MDBoxLayout:
+#                size_hint_y:0.15
+#
+#                orientation:'horizontal'
+#                pos_hint:{"center_x":0.5,"center_y":0.5}
+#                MDLabel:
+#                    text:'Home'
+#                    halign:'center'
+#                    md_bg_color:'blue'
+#                MDCard:
+#                    on_release:root.home2stats()
+#                    MDLabel:
+#                        text: 'Stats'
+#                        md_bg_color:'pink'
+#                        halign:'center'
 
 
 <LearnScreen>:
     MDLabel:
         text:'Learn Screen'
+
+<TestScreen>:
+    MDLabel:
+        text:'Test Screen'
+
+<TranslateScreen>:
+    MDLabel:
+        text:'Translate Screen'
+
+<StatsScreen>:
+    MDLabel:
+        text:'Stats Screen'

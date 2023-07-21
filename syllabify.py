@@ -92,8 +92,37 @@ def syllabify(wordToSyllabify):
     while "-" in word: # bye bye hyphen
         word.remove("-")
 
+    for j in word:
+        if j[0] in ['a','e','i','o']:
+            print(j[0])
+            word.insert(word.index(j)+1,j[1:])
+            word[word.index(j)] = word[word.index(j)][0]
+        if len(j)>2:
+            if j[:2]!='ng':
+                word.insert(word.index(j) + 1, j[2:])
+                word[word.index(j)] = word[word.index(j)][:2]
+
     return word
 
-print(syllabify("kumain"))
-print(type(syllabify("kumain")))
+def translate(word:str):
+    letra = {"a":["ᜀ"],"e":["ᜁ"],"i":["ᜁ"],"o":["ᜂ"],"u":["ᜂ"],"b": ["ᜊ᜔","ᜊ","ᜊᜒ","ᜊᜓ"],"k":["ᜃ᜔","ᜃ","ᜃᜒ","ᜃᜓ"],"d":["ᜇ᜔","ᜇ","ᜇᜒ","ᜇᜓ"],"g":["ᜄ᜔","ᜄ","ᜄᜒ","ᜄᜓ"],"h":["ᜑ᜔","ᜑ","ᜑᜒ","ᜑᜓ"],"l":["ᜎ᜔","ᜎ","ᜎᜒ","ᜎᜓ"],"m":["ᜋ᜔","ᜋ","ᜋᜒ","ᜋᜓ"],"n":["ᜈ᜔","ᜈ","ᜈ","ᜒᜈᜓ"],"ng":["ᜅ᜔","ᜅ","ᜅᜒ","ᜅᜓ"],"p":["ᜉ᜔","ᜉ","ᜉᜒ","ᜉᜓ"],"s":["ᜐ᜔","ᜐ","ᜐᜒ","ᜐᜓ"],"t":["ᜆ᜔","ᜆ","ᜆᜒ","ᜆᜓ"],"w":["ᜏ᜔","ᜏ","ᜏᜒ","ᜏᜓ"],"y": ["ᜌ᜔","ᜌ","ᜌᜒ","ᜌᜓ"]}
+    word = syllabify(word)
+    print(word)
+    baybayin=""
+    for pantig in word:
+        if pantig[0] in ['a', 'b', 'k', 'd', 'e', 'i', 'g', 'h', 'l', 'm', 'n', 'ng', 'p', 'r', 's', 't', 'o', 'u', 'w','y']:
+            if len(pantig) < 2:
+                baybayin+=letra[pantig][0]
+            else:
+                j = pantig[1]
+                if pantig[:2] == 'ng':
+                    j = pantig[2]
+                if j == 'a':
+                    baybayin+=letra[pantig[0]][1]
+                if j in ['e', 'i']:
+                    baybayin+=letra[pantig[0]][2]
+                if j in ['o', 'u']:
+                    baybayin+=letra[pantig[0]][3]
+    return baybayin
 
+print(translate('kumain'))
