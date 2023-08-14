@@ -3,12 +3,15 @@ ScreenManager:
         name: "HomeScreen"
     LearnScreen:
         name: "LearnScreen"
-    TestScreen:
-        name: "TestScreen"
+    Flashcards:
+        name: "Flashcards"
     TranslateScreen:
         name: "TranslateScreen"
+    TestScreen:
+        name: "TestScreen"
     StatsScreen:
         name: "StatsScreen"
+
 
 <HomeScreen>:
     MDBoxLayout:
@@ -20,15 +23,16 @@ ScreenManager:
             size_hint_y:258
             orientation:'vertical'
             #orange_1.1 (Logo + Daily Task)
-            MDLabel:
-                text: 'Logo'
-                md_bg_color: 'blue'
+            MDCard:
                 size_hint_y:0.43
+                Image:
+                    size_hint_y:0.8
+                    source:'images/logo.png'
+                    pos_hint: {"center_x":0.5, "center_y":0.5}
             MDCard:
                 md_bg_color: 'pink'
                 size_hint:0.8,0.57 #147
                 pos_hint:{"center_x":0.5,"center_y":0.5}
-                padding:
                 MDLabel:
                     text: 'Daily Task'
 
@@ -53,27 +57,39 @@ ScreenManager:
                         border_radius:20
                         radius:[14]
                         size_hint_x:0.38
-                        md_bg_color:'grey'
                         on_release:root.home2learn()
-                        
-                        MDLabel:
-                            text: 'Learn'
+                        Image:
+                            source:'images/Learn.png'
+                            allow_stretch:True
+                            keep_ratio: True
+                            size:self.parent.size
+
+#                       MDLabel:
+#                            text: 'Learn'
                     MDCard: #TEST
                         border_radius:20
                         size_hint_x:0.38
                         radius:[14]
-                        md_bg_color:'purple'
                         on_release:root.home2test()
-                        MDLabel:
-                            text: 'Test'
+                        Image:
+                            source:'images/Test.png'
+                            allow_stretch:True
+                            keep_ratio: True
+                            size:self.parent.size
                 #blue_2.2 (Translate)
                 MDCard:
                     size_hint:0.81,0.3
                     pos_hint:{"center_x":0.5,"center_y":0.5}
-                    md_bg_color:'violet'
                     on_release:root.home2translate()
-                    MDLabel:
-                        text:'Translate'
+                    MDBoxLayout:
+                        Image:
+                            source:'images/Translate.png'
+                            allow_stretch:True
+                            keep_ratio:True
+                            size_hint:1,1
+
+#                    MDLabel:
+#                        text:'Translate'
 
 
             #orange_2.2 (NavBar)
@@ -84,19 +100,288 @@ ScreenManager:
                 MDBottomNavigationItem:
                     name: 'home'
                     text: 'Home'
+#                    icon:'images/icon-home.png'
                     icon:'home'
                     size_hint_x:0.38
-                    md_bg_color:'blue'
+                    md_bg_color:'black'
                     BoxLayout:
                         orientation:'vertical'
 
                 MDBottomNavigationItem:
                     name: 'stats'
-                    text: 'Stats'
-                    icon:'functions'
+                    text: 'Saved'
+                    icon: 'images/icon-star-on.png'
                     size_hint_x:0.38
-                    BoxLayout:
-                        orientation:'vertical'
+                    on_tab_touch_down:root.home2stats()
+
+
+<Flashcards>:
+    MDBoxLayout:
+        orientation:'vertical'
+        md_bg_color:'grey'
+        spacing:45
+
+        #red1: about baybayin
+        MDBoxLayout:
+            md_bg_color:'purple'
+            orientation:'horizontal'
+            size_hint_y:0.12
+            MDIconButton:
+                icon:'arrow-left'
+                on_release:root.backtohome()
+            MDLabel:
+                text:'About Baybayin'
+                font_name:'Helvetica'
+                bold:True
+                style:'h1'
+            MDCard:
+                MDLabel:
+                    text:'5/10'
+                    font_name:'Helvetica'
+
+        #red2: prompt or question
+        MDBoxLayout:
+            size_hint_y:0.16
+            md_bg_color:'blue'
+            MDLabel:
+                text:'What does this character transcribe to?'
+                font_name:'Helvetica'
+
+        #red3: content + choices
+        MDBoxLayout:
+            size_hint_y:0.72
+            md_bg_color:'purple'
+            orientation:'vertical'
+            spacing:77
+            MDBoxLayout:
+                size_hint:.81,.43
+                pos_hint:{"center_x":0.5,"center_y":0.5}
+                MDLabel:
+                    md_bg_color:'pink'
+                    text:'Content'
+            MDBoxLayout:
+                spacing:33
+                orientation:'vertical'
+                size_hint_x:.25
+                MDBoxLayout:
+                    orientation:'horizontal'
+                    spacing:20
+                    size_hint_y:61
+                    #CHOICE 1 - CARD
+                    MDCard:
+                        size_hint_x:0.4
+                        MDLabel:
+                            text:'Choice 1'
+                    MDCard:
+                        size_hint_x:0.4
+                        MDLabel:
+                            text:'Choice 2'
+                MDBoxLayout:
+                    size_hint_y:61
+                    orientation:'horizontal'
+                    MDCard:
+                        MDLabel:
+                            text:'Choice 3'
+                    MDCard:
+                        MDLabel:
+                            text:'Choice 4'
+                    MDCard:
+                        MDLabel:
+                            text:'Choice 5'
+
+<LearnScreen>:
+    MDBoxLayout:
+        orientation:'vertical'
+        Image:
+            source:'images/learn_bg.png'
+            allow_stretch:True
+            keep_ratio:True
+        MDBoxLayout:
+            md_bg_color:'pink'
+            MDLabel:
+                text:'Learn'
+                font_name:'Helvetica'
+                style:'h1'
+        MDBoxLayout:
+            md_bg_color:'purple'
+
+
+
+
+<TranslateScreen>:
+    MDBoxLayout:
+        orientation:'vertical'
+        #TOP
+        MDBoxLayout:
+            size_hint_y:411
+            spacing: 65
+            orientation:'vertical'
+            #ORANGE_1
+            MDBoxLayout:
+                size_hint_y:80
+                orientation:'vertical'
+#                md_bg_color:'violet'
+                MDBoxLayout:
+                    orientation:'horizontal'
+                    MDIconButton:
+                        icon:'arrow-left'
+                        on_release:root.backtohome()
+                    MDLabel:
+                        text:'Translate'
+                        valign:'center'
+                        font_name:'Helvetica'
+                        font_size:'50px'
+                        #halign:'center'
+                        padding:'170px'
+                        bold: True
+                MDLabel:
+                    text:'Tagalog to Baybayin'
+                    font_name:'Helvetica'
+                    halign:'center'
+            #ORANGE_2 - TAGALOG TEXT FIELD
+            MDBoxLayout:
+                size_hint_y:244
+#                md_bg_color:'pink'
+                orientation:'vertical'
+                MDLabel:
+                    text:'Tagalog'
+                    font_name:'Helvetica'
+                    size_hint_y:21
+                    padding:66
+#                MDCard:
+#                    size_hint:.81,223
+#                    pos_hint:{"center_x":0.5}
+#                    border_radius:25
+#                    radius:[25]
+                MDTextFieldRect:
+                    hint_text: "Fill mode"
+                    size_hint:.81,223
+                    border_radius:25
+                    pos_hint:{"center_x":0.5,"center_y":0.8}
+                    border_radius:25
+                    radius:[25]
+                    id: tbd
+                    hint_text: "Type here"
+#                MDCard:
+#                    size_hint:.81,223
+#                    pos_hint:{"center_x":0.5}
+#                    border_radius:25
+#                    radius:[25]
+#                    MDTextField:
+#                        size_hint_x:0.8
+#                        hint_text: "No helper text"
+#                        pos_hint:{"center_x":0.5,"center_y":0.8}
+
+        #ARROW MIDDLE
+        MDIconButton:
+            size_hint_y:65
+            icon:'images/arrow.png'
+            pos_hint:{"center_x":0.5,"center_y":0.5 }
+            allow_stretch:True
+            keep_ratio:True
+            on_release:root.translate()
+
+        #BOTTOM
+        MDBoxLayout:
+            size_hint_y:336
+#            md_bg_color:'grey'
+            orientation:'vertical'
+            MDBoxLayout:
+                size_hint_y:244
+                md_bg_color:'purple'
+                orientation:'vertical'
+                MDLabel:
+                    text:'Baybayin'
+                    font_name:'Helvetica'
+                    size_hint_y:21
+                    padding:66
+                MDCard:
+                    size_hint:.81,223
+                    pos_hint:{"center_x":0.5}
+                    outline_width: dp(5)
+                    outline_color:'black'
+                    border_radius:25
+                    radius:[25]
+                    MDLabel:
+                        text: ''
+                        font_name:'Noto'
+                        id: translation
+                        font_size:60
+                        pos_hint_y:0.8
+                    MDIconButton:
+                        icon:'images/icon-copy.png'
+                        on_release:root.copy_translation()
+            MDBoxLayout:
+                size_hint_y:92
+                md_bg_color:'white'
+
+
+#    MDBoxLayout:
+#        markup:True
+#        orientation:'vertical'
+#        spacing:65
+#        MDBoxLayout:
+#            orientation:'vertical'
+#            size_hint_y: 102
+#            MDBoxLayout:
+#                orientation:'horizontal'
+#                size_hint_y:68
+#                MDIconButton:
+#                    icon:'arrow-left'
+#                    md_bg_color:'blue'
+#                    anchor_x:'left'
+#                    anchor_y:'bottom'
+#                    pos_hint:{"center_x":0.5, "center_y":0.5}
+#                MDLabel:
+#                    text:'Translate'
+#                    halign:'center'
+#                    bold:True
+#                    font_size:50
+#                    md_bg_color:'purple'
+#                    pos_hint:{"x":0.2}
+#            MDLabel:
+#                markup:True
+#                size_hint_y:34
+#                text:'[i]Tagalog to Baybayin[/i]'
+#                font_name:'Helvetica'
+#                halign:'center'
+#                md_bg_color:'pink'
+#                font_size:30
+#
+#        #BOTTOM HALF ACTUAL TRANSLATOR
+#        MDBoxLayout:
+#            orientation:'vertical'
+#            size_hint_y:544
+#            MDBoxLayout:
+#                orientation:'vertical'
+#                size_hint_y:239
+#                MDBoxLayout:
+#                    size_hint_y:0.3
+#                    orientation:'vertical'
+#                    MDLabel:
+#                        text:"tagalog"
+#                        md_bg_color:'blue'
+#                    MDLabel:
+#                        text:'TextField'
+#                        md_bg_color:'grey'
+#            MDLabel:
+#                size_hint_y:0.04
+#                text: "arrow"
+#                md_bg_color:'grey'
+#            MDBoxLayout:
+#                orientation:'vertical'
+#                size_hint_y:239
+#                MDBoxLayout:
+#                    size_hint_y:0.3
+#                    orientation:'vertical'
+#                    MDLabel:
+#                        text:"tagalog"
+#                        md_bg_color:'blue'
+#                    MDLabel:
+#                        text:'TextField'
+#                        md_bg_color:'grey'
+
+
 
 
 #            MDBoxLayout:
@@ -116,17 +401,9 @@ ScreenManager:
 #                        halign:'center'
 
 
-<LearnScreen>:
-    MDLabel:
-        text:'Learn Screen'
-
 <TestScreen>:
     MDLabel:
         text:'Test Screen'
-
-<TranslateScreen>:
-    MDLabel:
-        text:'Translate Screen'
 
 <StatsScreen>:
     MDLabel:
