@@ -15,6 +15,7 @@ from kivymd.uix.textfield import  MDTextField
 from syllabify import translate, syllabify
 import pyperclip
 from kivy.clock import Clock
+#klkhjgfgh
 
 class HomeScreen(MDScreen):
     dialog=None
