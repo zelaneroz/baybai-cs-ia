@@ -1,4 +1,10 @@
 ScreenManager:
+    IntroScreen:
+        name:"IntroScreen"
+    SignUpScreen:
+        name:"SignUpScreen"
+    LoginScreen:
+        name:"LoginScreen"
     HomeScreen:
         name: "HomeScreen"
     LearnScreen:
@@ -11,7 +17,118 @@ ScreenManager:
         name: "TestScreen"
     StatsScreen:
         name: "StatsScreen"
+    NetworkScreen:
+        name: "NetworkScreen"
 
+<IntroScreen>:
+    MDBoxLayout:
+        orientation:'vertical'
+        Image:
+            source:'images/logo.png'
+
+        MDRoundFlatButton:
+            pos_hint:{"center_x":0.5, "center_y":0.5}
+            text: "Register"
+            text_color: "black"
+            font_name:'Helvetica'
+            bold:True
+            on_release:root.signup_screen()
+        MDRoundFlatButton:
+            pos_hint:{"center_x":0.5, "center_y":0.5}
+            text: "Log in"
+            text_color: "black"
+            font_name:'Helvetica'
+            bold:True
+            on_release:root.login_screen()
+
+<SignUpScreen>:
+    MDBoxLayout:
+        orientation:'vertical'
+        pos_hint: {"center_x":0.5, "center_y":0.5}
+        size_hint: 0.7, 0.8
+        MDLabel:
+            text:'Sign up'
+            font_name:'Helvetica'
+            bold:True
+            font_size:'50px'
+            style:'h1'
+        MDBoxLayout:
+            orientation:'vertical'
+            spacing: 0.2
+            MDTextField:
+                hint_text: "Name"
+                mode: "round"
+                max_text_length: 15
+                id:name
+
+            MDTextField:
+                hint_text: "username"
+                mode: "round"
+                max_text_length: 15
+                id:uname
+
+            MDTextField:
+                hint_text: "Password"
+                mode: "round"
+                max_text_length: 15
+                id:password
+
+            MDTextField:
+                hint_text: "Confirm Password"
+                mode: "round"
+                max_text_length: 15
+                id: confirm_password
+
+            MDRoundFlatButton:
+                text: "Sign in"
+                on_press: root.try_register()
+
+        MDTextButton:
+            text: "Already have an account? Sign in here"
+            custom_color: "#F08DA9"
+            size_hint: 1, .25
+            halign: "center"
+            pos_hint: {"center_x":0.5,"center_y":.5}
+            on_press: root.login_screen()
+
+
+
+<LoginScreen>:
+    MDBoxLayout:
+        orientation:'vertical'
+        pos_hint: {"center_x":0.5, "center_y":0.5}
+        size_hint: 0.7, 0.8
+        MDLabel:
+            text:'Log in'
+            font_name:'Helvetica'
+            bold:True
+            font_size:'50px'
+            style:'h1'
+        MDBoxLayout:
+            orientation:'vertical'
+            spacing: 0.2
+            MDTextField:
+                hint_text: "username"
+                mode: "round"
+                max_text_length: 15
+                id: uname
+
+            MDTextField:
+                hint_text: "Password"
+                mode: "round"
+                max_text_length: 15
+                id: password
+        MDRoundFlatButton:
+            text: "Log in"
+            on_press: root.try_login()
+
+        MDTextButton:
+            text: "Don't have an account? Register here"
+            custom_color: "#F08DA9"
+            size_hint: 1, .25
+            halign: "center"
+            pos_hint: {"center_x":0.5,"center_y":.5}
+            on_press: root.signup_screen()
 
 <HomeScreen>:
     MDBoxLayout:
@@ -95,7 +212,7 @@ ScreenManager:
             #orange_2.2 (NavBar)
             MDBottomNavigation:
                 size_hint_y:0.15
-                panel_color: 'green'
+                panel_color: 'white'
 
                 MDBottomNavigationItem:
                     name: 'home'
@@ -113,6 +230,13 @@ ScreenManager:
                     icon: 'images/icon-star-on.png'
                     size_hint_x:0.38
                     on_tab_touch_down:root.home2stats()
+
+                MDBottomNavigationItem:
+                    name: 'network'
+                    text: 'Community'
+                    icon: 'images/icon-network.png'
+                    size_hint_x:0.38
+                    on_tab_touch_down:root.home2net()
 
 
 <Flashcards>:
@@ -189,6 +313,7 @@ ScreenManager:
                         MDLabel:
                             text:'Choice 5'
 
+
 <LearnScreen>:
     MDBoxLayout:
         orientation:'vertical'
@@ -204,8 +329,6 @@ ScreenManager:
                 style:'h1'
         MDBoxLayout:
             md_bg_color:'purple'
-
-
 
 
 <TranslateScreen>:
@@ -316,91 +439,6 @@ ScreenManager:
                 md_bg_color:'white'
 
 
-#    MDBoxLayout:
-#        markup:True
-#        orientation:'vertical'
-#        spacing:65
-#        MDBoxLayout:
-#            orientation:'vertical'
-#            size_hint_y: 102
-#            MDBoxLayout:
-#                orientation:'horizontal'
-#                size_hint_y:68
-#                MDIconButton:
-#                    icon:'arrow-left'
-#                    md_bg_color:'blue'
-#                    anchor_x:'left'
-#                    anchor_y:'bottom'
-#                    pos_hint:{"center_x":0.5, "center_y":0.5}
-#                MDLabel:
-#                    text:'Translate'
-#                    halign:'center'
-#                    bold:True
-#                    font_size:50
-#                    md_bg_color:'purple'
-#                    pos_hint:{"x":0.2}
-#            MDLabel:
-#                markup:True
-#                size_hint_y:34
-#                text:'[i]Tagalog to Baybayin[/i]'
-#                font_name:'Helvetica'
-#                halign:'center'
-#                md_bg_color:'pink'
-#                font_size:30
-#
-#        #BOTTOM HALF ACTUAL TRANSLATOR
-#        MDBoxLayout:
-#            orientation:'vertical'
-#            size_hint_y:544
-#            MDBoxLayout:
-#                orientation:'vertical'
-#                size_hint_y:239
-#                MDBoxLayout:
-#                    size_hint_y:0.3
-#                    orientation:'vertical'
-#                    MDLabel:
-#                        text:"tagalog"
-#                        md_bg_color:'blue'
-#                    MDLabel:
-#                        text:'TextField'
-#                        md_bg_color:'grey'
-#            MDLabel:
-#                size_hint_y:0.04
-#                text: "arrow"
-#                md_bg_color:'grey'
-#            MDBoxLayout:
-#                orientation:'vertical'
-#                size_hint_y:239
-#                MDBoxLayout:
-#                    size_hint_y:0.3
-#                    orientation:'vertical'
-#                    MDLabel:
-#                        text:"tagalog"
-#                        md_bg_color:'blue'
-#                    MDLabel:
-#                        text:'TextField'
-#                        md_bg_color:'grey'
-
-
-
-
-#            MDBoxLayout:
-#                size_hint_y:0.15
-#
-#                orientation:'horizontal'
-#                pos_hint:{"center_x":0.5,"center_y":0.5}
-#                MDLabel:
-#                    text:'Home'
-#                    halign:'center'
-#                    md_bg_color:'blue'
-#                MDCard:
-#                    on_release:root.home2stats()
-#                    MDLabel:
-#                        text: 'Stats'
-#                        md_bg_color:'pink'
-#                        halign:'center'
-
-
 <TestScreen>:
     MDLabel:
         text:'Test Screen'
@@ -408,3 +446,7 @@ ScreenManager:
 <StatsScreen>:
     MDLabel:
         text:'Stats Screen'
+
+<NetworkScreen>:
+    MDLabel:
+        text:'Network Screen'
