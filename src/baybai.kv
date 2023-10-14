@@ -1,4 +1,8 @@
 ScreenManager:
+#    TranslateScreen:
+#        name: "TranslateScreen"
+    LearnScreen:
+        name: "LearnScreen"
     IntroScreen:
         name:"IntroScreen"
     SignUpScreen:
@@ -7,8 +11,6 @@ ScreenManager:
         name:"LoginScreen"
     HomeScreen:
         name: "HomeScreen"
-    LearnScreen:
-        name: "LearnScreen"
     Flashcards:
         name: "Flashcards"
     TranslateScreen:
@@ -19,6 +21,191 @@ ScreenManager:
         name: "StatsScreen"
     NetworkScreen:
         name: "NetworkScreen"
+#    LessonTemp1Screen:
+#        name: "LessonTemp1Screen"
+
+<LearnScreen>:
+    RelativeLayout:
+        AsyncImage:
+            source: 'images/learn_bg.png'  # Replace this with the URL or local path of your image
+            allow_stretch: True
+            pos_hint: {'center_x': 0.5, 'center_y': 0.9}
+
+        MDIconButton:
+            icon:'images/arrow_back.png'
+            pos_hint: {'center_x': 0.08, 'center_y': 0.95}  # Position the button in the center
+            size_hint: 0.2,0.2
+            on_release:root.backtohome()
+
+        MDLabel:
+            text: "Learn"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.78}
+            valign:'center'
+            halign:'center'
+            font_name:'Helvetica'
+            font_size:'50px'
+            bold: True
+#            md_bg_color: 'blue'
+            size_hint:1,0.05
+        MDScrollView:
+            size_hint: 1, 0.75
+            #CARDS OF LEVELS
+            MDBoxLayout:
+                orientation: 'vertical'
+                spacing: 15
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'FFA3E7'
+                    on_release: root.learn1()
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/1.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'About Baybayin'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
+
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'FFB019'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/2.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'Tagalog Transcription and Prerequisites'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
+
+
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'00FF9D'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/3.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'Vowels and Kudlit'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
+
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'FFA3E7'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/4.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'A, Ba, Ka, Da'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
+
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'FFB019'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/5.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'E/I, Ga, Ha, La'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
+
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'00FF9D'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/6.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'Ma, Na, nga, O/U'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
+
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'FFA3E7'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/7.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'Pa, Sa, Ta, Wa, Ya'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
+
+                MDCard:
+                    border_radius:25
+                    radius:[20]
+                    size_hint:0.7,0.2
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    md_bg_color:'FFB019'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+                        Image:
+                            source: 'images/8.png'
+                            size_hint:0.4,0.4
+                            pos_hint: {'center_x': 0.8, 'center_y': 0.5}
+                        MDLabel:
+                            text:'Common Words!'
+                            valign:'center'
+                            font_name:'Helvetica'
+                            bold: True
 
 <IntroScreen>:
     MDBoxLayout:
@@ -314,21 +501,6 @@ ScreenManager:
                             text:'Choice 5'
 
 
-<LearnScreen>:
-    MDBoxLayout:
-        orientation:'vertical'
-        Image:
-            source:'images/learn_bg.png'
-            allow_stretch:True
-            keep_ratio:True
-        MDBoxLayout:
-            md_bg_color:'pink'
-            MDLabel:
-                text:'Learn'
-                font_name:'Helvetica'
-                style:'h1'
-        MDBoxLayout:
-            md_bg_color:'purple'
 
 
 <TranslateScreen>:
@@ -347,7 +519,7 @@ ScreenManager:
                 MDBoxLayout:
                     orientation:'horizontal'
                     MDIconButton:
-                        icon:'arrow-left'
+                        icon:'images/arrow_back.png'
                         on_release:root.backtohome()
                     MDLabel:
                         text:'Translate'

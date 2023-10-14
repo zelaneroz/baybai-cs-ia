@@ -1,6 +1,8 @@
 import kivy.metrics
+from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.scrollview import MDScrollView
 import sqlite3
 from kivymd.uix.datatables import MDDataTable
 from kivy.graphics import Ellipse
@@ -122,9 +124,9 @@ class LoginScreen(MDScreen):
             Clock.schedule_once(lambda dt: self.move_to_home_screen(), 2)
 
 class HomeScreen(MDScreen):
-    print("Now in HomeScreen")
 
     def home2learn(self):
+        print("self.parent:", self.parent)  # Check the value of self.parent
         self.parent.current = "LearnScreen"
     def home2test(self):
         self.parent.current = "TestScreen"
@@ -139,7 +141,11 @@ class HomeScreen(MDScreen):
 
 
 class LearnScreen(MDScreen):
-    pass
+    def backtohome(self):
+        baybai.backtohome(self)
+
+    def learn1(self):
+        pass
 
 class Flashcards(MDScreen):
     def backtohome(self):
@@ -187,6 +193,11 @@ class baybai(MDApp):
         LabelBase.register(name='Helvetica',fn_regular='fonts/HelveticaNeue-01.ttf',fn_bold='fonts/HelveticaNeue-Bold-02.ttf',fn_bolditalic='fonts/HelveticaNeue-BoldItalic-04.ttf',fn_italic='fonts/HelveticaNeue-Italic-03.ttf')
         LabelBase.register(name='Baybayin', fn_regular='fonts/Baybayin.ttf')
         LabelBase.register(name='Noto', fn_regular='fonts/NotoSansTagalog.ttf')
+        screen_manager = ScreenManager()
+        home_screen = HomeScreen(name='HomeScreen')  # Create an instance of your HomeScreen
+        learn_screen = LearnScreen(name='LearnScreen')
+        screen_manager.add_widget(home_screen)  # Add the HomeScreen to the ScreenManager
+        screen_manager.add_widget(learn_screen)
         return
 
 
