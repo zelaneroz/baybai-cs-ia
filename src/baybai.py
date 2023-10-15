@@ -151,7 +151,8 @@ class LearnScreen(MDScreen):
         self.parent.current = 'Learn_1_1_Screen'
 
 class Learn_1_1_Screen(MDScreen):
-    pass
+    def backtohome(self):
+        baybai.backtohome(self)
 
 class Flashcards(MDScreen):
     def backtohome(self):

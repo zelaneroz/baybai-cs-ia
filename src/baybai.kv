@@ -1,6 +1,6 @@
 ScreenManager:
-#    TranslateScreen:
-#        name: "TranslateScreen"
+    Learn_1_1_Screen:
+        name: "Learn_1_1_Screen"
     LearnScreen:
         name: "LearnScreen"
     IntroScreen:
@@ -21,10 +21,95 @@ ScreenManager:
         name: "StatsScreen"
     NetworkScreen:
         name: "NetworkScreen"
-    Learn_1_1_Screen:
-        name: "Learn_1_1_Screen"
-#    LessonTemp1Screen:
-#        name: "LessonTemp1Screen"
+#    Learn_1_1_Screen:
+#        name: "Learn_1_1_Screen"
+
+
+<Learn_1_1_Screen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y:0.12
+            MDIconButton:
+                icon:'images/arrow_back.png'
+                pos_hint: {'center_x': 0.4, 'center_y': 0.5}  # Position the button in the center
+                size_hint: 0.2,0.2
+                on_release:root.backtohome()
+            MDLabel:
+                text: "About Baybayin"
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                valign:'center'
+                halign:'center'
+                font_name:'Helvetica'
+                font_size:'50px'
+                bold: True
+                size_hint:0.5,1
+            MDLabel:
+                text: "Progress Bar"
+                font_size: 15
+                pos_hint: {'center_x':.9,'center_y':0.5}
+                size_hint:0.2,1
+
+        MDBoxLayout:
+            orientation: 'vertical'
+#            md_bg_color: 'purple'
+            size_hint:0.7,0.88
+            pos_hint: {'center_x':.5,'center_y':0.5}
+            spacing: 0.1
+
+            MDLabel:
+                text: 'What does this character transcribe to?'
+                size_hint_y: 0.15
+#                md_bg_color: 'blue'
+                valign:'center'
+#                halign:'center'
+                font_name:'Helvetica'
+                font_size:'30px'
+                bold: True
+
+            #FLASHCARD
+            MDCard:
+                text: 'Flashcard here'
+                border_radius:20
+                id: card_input
+                radius:[14]
+                md_bg_color: 'red'
+                size_hint_y: 0.35
+
+            #OPTIONS
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_y: 0.4
+                MDBoxLayout:
+                    size_hint_y: 0.5
+                    orientation: 'horizontal'
+                    MDCard:
+                        text: 'Ka'
+                    MDCard:
+                        text: 'ke'
+
+                MDBoxLayout:
+                    size_hint_y: 0.5
+                    orientation: 'horizontal'
+                    MDCard:
+                        text: 'ki'
+                    MDCard:
+                        text: 'ko'
+                    MDCard:
+                        text: 'ku'
+            MDLabel:
+                text: 'Space placeholder'
+                size_hint_y: 0.1
+
+
+
+
+
+
+
+
 
 <LearnScreen>:
     RelativeLayout:
@@ -611,10 +696,6 @@ ScreenManager:
             MDBoxLayout:
                 size_hint_y:92
                 md_bg_color:'white'
-
-<Learn_1_1_Screen>:
-    MDLabel:
-        text:'Learn_1_1_Screen'
 
 <TestScreen>:
     MDLabel:
