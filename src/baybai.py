@@ -16,6 +16,9 @@ from kivy.core.text import LabelBase
 from kivymd.uix.textfield import MDTextFieldRect
 from kivymd.uix.textfield import  MDTextField
 from syllabify import translate, syllabify
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.list import OneLineListItem
+
 import pyperclip
 from kivy.clock import Clock
 from encrypt import encrypt_password, check_password
@@ -145,7 +148,10 @@ class LearnScreen(MDScreen):
         baybai.backtohome(self)
 
     def learn1(self):
-        pass
+        self.parent.current = 'Learn_1_1_Screen'
+
+class Learn_1_1_Screen(MDScreen):
+    pass
 
 class Flashcards(MDScreen):
     def backtohome(self):
@@ -181,7 +187,17 @@ class StatsScreen(MDScreen):
     dialog=None
 
 class NetworkScreen(MDScreen):
-    dialog=None
+    def on_pre_enter(self, *args):
+        # Call a function here to fetch forum posts from your online source
+        # For example: forum_posts = fetch_forum_posts_from_api()
+
+        # For simplicity, let's assume forum_posts is a list of post titles
+        forum_posts = ["Post 1", "Post 2", "Post 3"]
+
+        # Add forum posts to the forum_posts MDList in the Network screen
+        for post_title in forum_posts:
+            list_item = OneLineListItem(text=post_title)
+            self.ids.forum_posts.add_widget(list_item)
 
 class stats(MDScreen):
     dialog=None
