@@ -1,6 +1,8 @@
 import kivy.metrics
 from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
+from kivy.lang import Builder
+from kivy.animation import Animation
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.scrollview import MDScrollView
 import sqlite3
@@ -151,8 +153,36 @@ class LearnScreen(MDScreen):
         self.parent.current = 'Learn_1_1_Screen'
 
 class Learn_1_1_Screen(MDScreen):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.flashcard_contents = ['1', '2', '3', '4']
+        self.current_card_index = 0
+        print(f'Index: {self.current_card_index}')
+        # self.update_flashcard_content()
+
     def backtohome(self):
         baybai.backtohome(self)
+
+    def next_card(self):
+        self.current_card_index += 1
+        if self.current_card_index >= len(self.flashcard_contents):
+            self.current_card_index = 0  # Reset to the first card if we've reached the end
+        self.update_flashcard_content()
+
+    def prev_card(self):
+        print(len(self.flashcard_contents)-1)
+        if self.current_card_index == 0:
+            pass
+        else:
+            self.current_card_index -= 1
+            #
+            # self.current_card_index = len(
+            #     self.flashcard_contents) - 1  # Go to the last card if we've reached the beginning
+        self.update_flashcard_content()
+
+    def update_flashcard_content(self):
+        self.ids.flashcard_content.text = self.flashcard_contents[self.current_card_index]
+        print(f'Index: {self.current_card_index}')
 
 class Flashcards(MDScreen):
     def backtohome(self):
@@ -215,7 +245,7 @@ class baybai(MDApp):
         learn_screen = LearnScreen(name='LearnScreen')
         screen_manager.add_widget(home_screen)  # Add the HomeScreen to the ScreenManager
         screen_manager.add_widget(learn_screen)
-        return
+        return Builder.load_file('baybai.kv')
 
 
 test = baybai()

@@ -1,8 +1,6 @@
 ScreenManager:
     Learn_1_1_Screen:
         name: "Learn_1_1_Screen"
-    LearnScreen:
-        name: "LearnScreen"
     IntroScreen:
         name:"IntroScreen"
     SignUpScreen:
@@ -13,14 +11,18 @@ ScreenManager:
         name: "HomeScreen"
     Flashcards:
         name: "Flashcards"
-    TranslateScreen:
-        name: "TranslateScreen"
     TestScreen:
         name: "TestScreen"
     StatsScreen:
         name: "StatsScreen"
     NetworkScreen:
         name: "NetworkScreen"
+    Learn_1_1_Screen:
+        name: "Learn_1_1_Screen"
+    LearnScreen:
+        name: "LearnScreen"
+    TranslateScreen:
+        name: "TranslateScreen"
 #    Learn_1_1_Screen:
 #        name: "Learn_1_1_Screen"
 
@@ -55,53 +57,77 @@ ScreenManager:
         MDBoxLayout:
             orientation: 'vertical'
 #            md_bg_color: 'purple'
-            size_hint:0.7,0.88
-            pos_hint: {'center_x':.5,'center_y':0.5}
-            spacing: 0.1
+            size_hint_y:0.88
+            pos_hint: {'center_x':.5,'center_y':0.3}
+#            spacing: 0.
 
             MDLabel:
                 text: 'What does this character transcribe to?'
-                size_hint_y: 0.15
+                size_hint_y: 0.05
 #                md_bg_color: 'blue'
                 valign:'center'
-#                halign:'center'
+                halign:'center'
                 font_name:'Helvetica'
-                font_size:'30px'
+                font_size:'40px'
                 bold: True
 
             #FLASHCARD
-            MDCard:
-                text: 'Flashcard here'
-                border_radius:20
-                id: card_input
-                radius:[14]
-                md_bg_color: 'red'
-                size_hint_y: 0.35
-
-            #OPTIONS
             MDBoxLayout:
-                orientation: 'vertical'
-                size_hint_y: 0.4
-                MDBoxLayout:
-                    size_hint_y: 0.5
-                    orientation: 'horizontal'
-                    MDCard:
-                        text: 'Ka'
-                    MDCard:
-                        text: 'ke'
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+                MDIconButton:
+                    icon:'images/arrow_back.png'
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.7}  # Position the button in the center
+                    size_hint_x: 0.1
+                    on_release:root.prev_card()
 
-                MDBoxLayout:
-                    size_hint_y: 0.5
-                    orientation: 'horizontal'
-                    MDCard:
-                        text: 'ki'
-                    MDCard:
-                        text: 'ko'
-                    MDCard:
-                        text: 'ku'
-            MDLabel:
-                text: 'Space placeholder'
-                size_hint_y: 0.1
+                MDCard:
+                    border_radius:20
+                    id: card_input
+                    radius:[14]
+                    md_bg_color: '#9851FF'
+                    size_hint: 0.7, 0.6
+                    pos_hint: {'center_x':.5,'center_y':0.7}
+
+                    MDLabel:
+                        text:root.flashcard_contents[0]
+                        halign: 'center'
+                        id: flashcard_content
+                        font_name: 'Noto'
+                        color: 'white'
+                        font_size: '250px'
+                        bold: True
+
+                MDIconButton:
+                    icon:'images/arrow_next.png'
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.7}  # Position the button in the center
+                    size_hint_x: 0.1
+                    on_release:root.next_card()
+
+#            #OPTIONS
+#            MDBoxLayout:
+#                orientation: 'vertical'
+#                size_hint_y: 0.4
+#                MDBoxLayout:
+#                    size_hint_y: 0.5
+#                    orientation: 'horizontal'
+#                    MDCard:
+#                        text: 'Ka'
+#                    MDCard:
+#                        text: 'ke'
+#
+#                MDBoxLayout:
+#                    size_hint_y: 0.5
+#                    orientation: 'horizontal'
+#                    MDCard:
+#                        text: 'ki'
+#                    MDCard:
+#                        text: 'ko'
+#                    MDCard:
+#                        text: 'ku'
+#            MDLabel:
+#                text: 'Space placeholder'
+#                size_hint_y: 0.1
 
 
 
@@ -295,25 +321,41 @@ ScreenManager:
                             bold: True
 
 <IntroScreen>:
-    MDBoxLayout:
-        orientation:'vertical'
-        Image:
+    RelativeLayout:
+        AsyncImage:
+            source:'images/intro_ellipse.png'
+            allow_stretch: True
+            pos_hint: {'center_x': 0.5, 'center_y': 0.28}
+        AsyncImage:
             source:'images/logo.png'
+            allow_stretch: True
+            size_hint: 0.8,0.8
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
 
+#        MDBoxLayout:
+#            orientation:'vertical'
         MDRoundFlatButton:
-            pos_hint:{"center_x":0.5, "center_y":0.5}
+            pos_hint:{"center_x":0.5, "center_y":0.4}
+            size_hint: 0.5, 0.06
             text: "Register"
             text_color: "black"
-            font_name:'Helvetica'
-            bold:True
+            md_bg_color: 'FFA3E7'
+            line_color: 'E536FF'
+            font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
             on_release:root.signup_screen()
         MDRoundFlatButton:
-            pos_hint:{"center_x":0.5, "center_y":0.5}
+            pos_hint:{"center_x":0.5, "center_y":0.3}
             text: "Log in"
             text_color: "black"
-            font_name:'Helvetica'
-            bold:True
+            font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
+            size_hint: 0.5, 0.06
+            line_color: "E536FF"
+            md_bg_color: 'white'
             on_release:root.login_screen()
+
+
+
+
 
 <SignUpScreen>:
     MDBoxLayout:
