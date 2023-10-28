@@ -1,4 +1,6 @@
 ScreenManager:
+    LearnScreen:
+        name: "LearnScreen"
     Learn_1_1_Screen:
         name: "Learn_1_1_Screen"
     IntroScreen:
@@ -11,16 +13,14 @@ ScreenManager:
         name: "HomeScreen"
     Flashcards:
         name: "Flashcards"
-    TestScreen:
-        name: "TestScreen"
+    SavedScreen:
+        name: "SavedScreen"
     StatsScreen:
         name: "StatsScreen"
     NetworkScreen:
         name: "NetworkScreen"
     Learn_1_1_Screen:
         name: "Learn_1_1_Screen"
-    LearnScreen:
-        name: "LearnScreen"
     TranslateScreen:
         name: "TranslateScreen"
 #    Learn_1_1_Screen:
@@ -40,7 +40,7 @@ ScreenManager:
                 size_hint: 0.2,0.2
                 on_release:root.backtohome()
             MDLabel:
-                text: "About Baybayin"
+                text: root.label_text_main
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 valign:'center'
                 halign:'center'
@@ -172,7 +172,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'FFA3E7'
-                    on_release: root.learn1()
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -184,6 +184,7 @@ ScreenManager:
                             text:'About Baybayin'
                             valign:'center'
                             font_name:'Helvetica'
+                            id: 'level1'
                             bold: True
 
                 MDCard:
@@ -192,6 +193,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'FFB019'
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -203,6 +205,7 @@ ScreenManager:
                             text:'Tagalog Transcription and Prerequisites'
                             valign:'center'
                             font_name:'Helvetica'
+                            id: 'level2'
                             bold: True
 
 
@@ -212,6 +215,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'00FF9D'
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -220,9 +224,10 @@ ScreenManager:
                             size_hint:0.4,0.4
                             pos_hint: {'center_x': 0.8, 'center_y': 0.5}
                         MDLabel:
-                            text:'Vowels and Kudlit'
+                            text:'Baybayin Basics'
                             valign:'center'
                             font_name:'Helvetica'
+                            id: 'level3'
                             bold: True
 
                 MDCard:
@@ -231,6 +236,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'FFA3E7'
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -239,9 +245,10 @@ ScreenManager:
                             size_hint:0.4,0.4
                             pos_hint: {'center_x': 0.8, 'center_y': 0.5}
                         MDLabel:
-                            text:'A, Ba, Ka, Da'
+                            text:'Vowels and Kudlit'
                             valign:'center'
                             font_name:'Helvetica'
+                            id: 'level4'
                             bold: True
 
                 MDCard:
@@ -250,6 +257,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'FFB019'
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -258,9 +266,10 @@ ScreenManager:
                             size_hint:0.4,0.4
                             pos_hint: {'center_x': 0.8, 'center_y': 0.5}
                         MDLabel:
-                            text:'E/I, Ga, Ha, La'
+                            text:'Ba,Ka,Da,Ga'
                             valign:'center'
                             font_name:'Helvetica'
+                            id: 'level5'
                             bold: True
 
                 MDCard:
@@ -269,6 +278,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'00FF9D'
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -277,9 +287,10 @@ ScreenManager:
                             size_hint:0.4,0.4
                             pos_hint: {'center_x': 0.8, 'center_y': 0.5}
                         MDLabel:
-                            text:'Ma, Na, nga, O/U'
+                            text:'Ha, La, Ma, Na, Nga'
                             valign:'center'
                             font_name:'Helvetica'
+                            id: 'level6'
                             bold: True
 
                 MDCard:
@@ -288,6 +299,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'FFA3E7'
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -298,6 +310,7 @@ ScreenManager:
                         MDLabel:
                             text:'Pa, Sa, Ta, Wa, Ya'
                             valign:'center'
+                            id: 'level7'
                             font_name:'Helvetica'
                             bold: True
 
@@ -307,6 +320,7 @@ ScreenManager:
                     size_hint:0.7,0.2
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     md_bg_color:'FFB019'
+                    on_release: root.learn_gen(self)
                     MDBoxLayout:
                         orientation: 'horizontal'
                         spacing: 20
@@ -315,7 +329,8 @@ ScreenManager:
                             size_hint:0.4,0.4
                             pos_hint: {'center_x': 0.8, 'center_y': 0.5}
                         MDLabel:
-                            text:'Common Words!'
+                            text:'Common Words'
+                            id: 'level8'
                             valign:'center'
                             font_name:'Helvetica'
                             bold: True
@@ -503,9 +518,9 @@ ScreenManager:
                         border_radius:20
                         size_hint_x:0.38
                         radius:[14]
-                        on_release:root.home2test()
+                        on_release:root.home2saved()
                         Image:
-                            source:'images/Test.png'
+                            source:'images/saved.png'
                             allow_stretch:True
                             keep_ratio: True
                             size:self.parent.size
@@ -739,9 +754,9 @@ ScreenManager:
                 size_hint_y:92
                 md_bg_color:'white'
 
-<TestScreen>:
+<SavedScreen>:
     MDLabel:
-        text:'Test Screen'
+        text:'Saved Screen'
 
 <StatsScreen>:
     MDLabel:

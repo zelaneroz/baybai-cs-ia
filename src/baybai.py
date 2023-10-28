@@ -6,11 +6,13 @@ from kivymd.uix.screen import MDScreen
 from kivymd.uix.scrollview import MDScrollView
 import sqlite3
 from kivymd.uix.datatables import MDDataTable
+from kivy.properties import StringProperty, NumericProperty
 from kivy.graphics import Ellipse
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.core.window import Window
+from kivymd.uix.label import MDLabel
 Window.size = (375,812)
 from kivy.core.text import LabelBase
 #https://zavoloklom.github.io/material-design-iconic-font/icons.html#new
@@ -132,8 +134,8 @@ class HomeScreen(MDScreen):
     def home2learn(self):
         print("self.parent:", self.parent)  # Check the value of self.parent
         self.parent.current = "LearnScreen"
-    def home2test(self):
-        self.parent.current = "TestScreen"
+    def home2saved(self):
+        self.parent.current = "SavedScreen"
     def home2translate(self):
         self.parent.current = "TranslateScreen"
     def home2stats(self):
@@ -142,6 +144,11 @@ class HomeScreen(MDScreen):
         self.parent.current = "NetworkScreen"
 
 
+level = 1
+label_text = ""
+level_dict = {1: "About Baybayin", 2: "Tagalog Transcription and Prerequisites", 3: "Baybayin Basics",
+              4: "Vowels and Kudlit", 5: "Ba,Ka,Da,Ga", 6: "Ha, La, Ma, Na, Nga", 7: "Pa, Sa, Ta, Wa, Ya",
+              8: "Common Words"}
 
 
 class LearnScreen(MDScreen):
@@ -151,13 +158,55 @@ class LearnScreen(MDScreen):
     def learn1(self):
         self.parent.current = 'Learn_1_1_Screen'
 
+    def learn2(self):
+        self.parent.current = 'Learn_1_1_Screen'
+
+    def learn_gen(self, card):
+        global level
+        global label_text
+        level_dict = {1:"About Baybayin",2:"Tagalog Transcription and Prerequisites",3:"Baybayin Basics",4:"Vowels and Kudlit",5:"Ba,Ka,Da,Ga",6:"Ha, La, Ma, Na, Nga",7:"Pa, Sa, Ta, Wa, Ya",8:"Common Words"}
+        #GET THE LEVEL NAME
+        for child in card.children:
+            if isinstance(child, MDBoxLayout):  # Change to your actual layout if it's not MDBoxLayout
+                for box_child in child.children:
+                    if isinstance(box_child, MDLabel):
+                        label_text = box_child.text
+                        # print(print('Label Text Updated:', label_text))
+                        break
+        level = next((k for k, v in level_dict.items() if v == label_text), None)
+        # print(label_text)
+        if level<3:
+            print('TBD')
+        else:
+            Learn_1_1_Screen.level = level
+            Learn_1_1_Screen.label_text = label_text
+            self.parent.current = 'Learn_1_1_Screen'
+            # Learn_1_1_Screen.on_enter()
+
+
 class Learn_1_1_Screen(MDScreen):
-    def __init__(self,**kwargs):
+    label_text_main = StringProperty("Initial Text")
+    def __init__(self, **kwargs,):
         super().__init__(**kwargs)
-        self.flashcard_contents = ['1', '2', '3', '4']
+        self.flashcard_contents = ['']
+    #     self.level = 1
+    #     self.label_text = "x"
+    #     print('Level: ', self.level, "label: ", self.label_text)
+    #     # self.flashcard_contents = ['1', '2', '3', '4']
+    #     self.flashcard_contents = ['']
+    #     self.current_card_index = 0
+    #     print()
+    #     print(f'Index: {self.current_card_index}')
+    #     # self.update_flashcard_content()
+
+    def on_enter(self, *args):
+        global label_text
+        global level
+        self.label_text_main = label_text
         self.current_card_index = 0
-        print(f'Index: {self.current_card_index}')
-        # self.update_flashcard_content()
+        self.level = level
+        self.flashcard_contents = ['1', '2', '3', '4']
+
 
     def backtohome(self):
         baybai.backtohome(self)
@@ -167,6 +216,7 @@ class Learn_1_1_Screen(MDScreen):
         if self.current_card_index >= len(self.flashcard_contents):
             self.current_card_index = 0  # Reset to the first card if we've reached the end
         self.update_flashcard_content()
+        print('LEVEL: ', level)
 
     def prev_card(self):
         print(len(self.flashcard_contents)-1)
@@ -187,7 +237,7 @@ class Flashcards(MDScreen):
     def backtohome(self):
         baybai.backtohome(self)
 
-class TestScreen(MDScreen):
+class SavedScreen(MDScreen):
     dialog=None
 
 class TranslateScreen(MDScreen):
