@@ -5,6 +5,7 @@ from kivy.animation import Animation
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.scrollview import MDScrollView
 import sqlite3
+from kivy.utils import get_color_from_hex
 from kivymd.uix.datatables import MDDataTable
 from kivy.properties import StringProperty, NumericProperty
 from kivy.graphics import Ellipse
@@ -64,7 +65,7 @@ class SignUpScreen(MDScreen):
         self.dialog.open()
 
     def validate_register(self, uname: str, pass1: str, conpass: str):
-        db = database_handler(namedb='baybai.db')
+        db = database_handler(namedb='src/baybai.db')
         popup_text = ""
 
         if uname in db.search(f"SELECT uname FROM users WHERE uname='{uname}'"):
@@ -81,7 +82,7 @@ class SignUpScreen(MDScreen):
         return False
 
     def try_register(self):
-        db = database_handler(namedb='baybai.db')
+        db = database_handler(namedb='src/baybai.db')
         db.run_query("""CREATE TABLE if not exists users(
                         id INTEGER primary key autoincrement,
                         name TEXT not null,
@@ -187,10 +188,10 @@ class LearnScreen(MDScreen):
             self.parent.current = 'Learn_1_1_Screen'
             # Learn_1_1_Screen.on_enter()
 
-
 class Learn_1_1_Screen(MDScreen):
     label_text_main = StringProperty("Initial Text")
-    def __init__(self, **kwargs,):
+
+    def __init__(self, **kwargs, ):
         super().__init__(**kwargs)
         self.flashcard_contents = ['']
 
@@ -200,42 +201,45 @@ class Learn_1_1_Screen(MDScreen):
         self.label_text_main = label_text
         self.current_card_index = 0
         self.level = level
-        # self.flashcard_contents = ['1', '2', '3', '4']
-        db = database_handler(namedb='baybai.db')
+        db = database_handler(namedb='src/baybai.db')
         word_pairs = db.search2(f"SELECT fro,bck FROM contents where lvl is {level}")
         db.close()
-        tagalog, baybayin = zip(*word_pairs)
-        tagalog = list(tagalog)
-        self.flashcard_contents = baybayin
-
-
-
-
+        self.tagalog, self.baybayin = zip(*word_pairs)
+        self.is_tagalog = True  # Initially showing Tagalog
+        self.update_flashcard_content()
 
     def backtohome(self):
         baybai.backtohome(self)
 
     def next_card(self):
         self.current_card_index += 1
-        if self.current_card_index >= len(self.flashcard_contents):
+        if self.current_card_index >= len(self.tagalog):  # Use length of tagalog list
             self.current_card_index = 0  # Reset to the first card if we've reached the end
         self.update_flashcard_content()
-        print('LEVEL: ', level)
+        print('LEVEL: ', self.level)
 
     def prev_card(self):
-        print(len(self.flashcard_contents)-1)
-        if self.current_card_index == 0:
-            pass
-        else:
+        if self.current_card_index > 0:
             self.current_card_index -= 1
-            #
-            # self.current_card_index = len(
-            #     self.flashcard_contents) - 1  # Go to the last card if we've reached the beginning
+        else:
+            self.current_card_index = len(self.tagalog) - 1  # Go to the last card if at the first card
+        self.update_flashcard_content()
+
+    def flip_card(self):
+        self.is_tagalog = not self.is_tagalog  # Toggle between Tagalog and Baybayin
+        if self.ids.card_input.md_bg_color == get_color_from_hex("#9851FF"):
+            self.ids.card_input.md_bg_color = get_color_from_hex("#D346FF")
+        else:
+            self.ids.card_input.md_bg_color = get_color_from_hex("#9851FF")
         self.update_flashcard_content()
 
     def update_flashcard_content(self):
-        self.ids.flashcard_content.text = self.flashcard_contents[self.current_card_index]
+        if self.is_tagalog:
+            self.ids.flashcard_content.text = self.tagalog[self.current_card_index]
+        else:
+            self.ids.flashcard_content.text = self.baybayin[self.current_card_index]
         print(f'Index: {self.current_card_index}')
+
 
 class Flashcards(MDScreen):
     def backtohome(self):

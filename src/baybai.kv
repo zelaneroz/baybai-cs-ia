@@ -1,8 +1,8 @@
 ScreenManager:
-    LearnScreen:
-        name: "LearnScreen"
-    Learn_1_1_Screen:
-        name: "Learn_1_1_Screen"
+#    LearnScreen:
+#        name: "LearnScreen"
+#    Learn_1_1_Screen:
+#        name: "Learn_1_1_Screen"
     IntroScreen:
         name:"IntroScreen"
     SignUpScreen:
@@ -21,10 +21,10 @@ ScreenManager:
         name: "NetworkScreen"
     Learn_1_1_Screen:
         name: "Learn_1_1_Screen"
+    LearnScreen:
+        name: "LearnScreen"
     TranslateScreen:
         name: "TranslateScreen"
-#    Learn_1_1_Screen:
-#        name: "Learn_1_1_Screen"
 
 
 <Learn_1_1_Screen>:
@@ -88,6 +88,7 @@ ScreenManager:
                     md_bg_color: '#9851FF'
                     size_hint: 0.7, 0.6
                     pos_hint: {'center_x':.5,'center_y':0.7}
+                    on_release: root.flip_card()
 
                     MDLabel:
                         text:root.flashcard_contents[0]
