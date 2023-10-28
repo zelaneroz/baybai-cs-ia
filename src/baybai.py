@@ -42,7 +42,10 @@ class database_handler:
     def search(self,query:str):
         result = self.cursor.execute(query).fetchall()
         return [item[0] for item in result]
-        #return result
+
+    def search2(self,query:str):
+        result = self.cursor.execute(query).fetchall()
+        return result
 
 class IntroScreen(MDScreen):
     pass
@@ -124,6 +127,7 @@ class LoginScreen(MDScreen):
     def try_login(self):
         db = database_handler(namedb='baybai.db')
         uname,passwd = self.ids.uname.text,self.ids.password.text
+        db.close()
 
         if self.validate_login(uname, passwd)[0]:
             self.popup(self.validate_login(uname, passwd)[1])
@@ -189,15 +193,6 @@ class Learn_1_1_Screen(MDScreen):
     def __init__(self, **kwargs,):
         super().__init__(**kwargs)
         self.flashcard_contents = ['']
-    #     self.level = 1
-    #     self.label_text = "x"
-    #     print('Level: ', self.level, "label: ", self.label_text)
-    #     # self.flashcard_contents = ['1', '2', '3', '4']
-    #     self.flashcard_contents = ['']
-    #     self.current_card_index = 0
-    #     print()
-    #     print(f'Index: {self.current_card_index}')
-    #     # self.update_flashcard_content()
 
     def on_enter(self, *args):
         global label_text
@@ -205,7 +200,16 @@ class Learn_1_1_Screen(MDScreen):
         self.label_text_main = label_text
         self.current_card_index = 0
         self.level = level
-        self.flashcard_contents = ['1', '2', '3', '4']
+        # self.flashcard_contents = ['1', '2', '3', '4']
+        db = database_handler(namedb='baybai.db')
+        word_pairs = db.search2(f"SELECT fro,bck FROM contents where lvl is {level}")
+        db.close()
+        tagalog, baybayin = zip(*word_pairs)
+        tagalog = list(tagalog)
+        self.flashcard_contents = baybayin
+
+
+
 
 
     def backtohome(self):
