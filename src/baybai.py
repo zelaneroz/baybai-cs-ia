@@ -99,7 +99,6 @@ class SignUpScreen(MDScreen):
             self.ids.name.text,self.ids.uname.text,self.ids.password.text,self.ids.confirm_password.text="","","",""
             current_user = uname
             self.parent.current = "HomeScreen"
-
 class LoginScreen(MDScreen):
     def popup(self,out: str):
         self.dialog = MDDialog(text=out)
@@ -111,7 +110,7 @@ class LoginScreen(MDScreen):
         self.parent.current = "HomeScreen"
 
     def validate_login(self,uname:str,passwd:str):
-        db = database_handler(namedb='baybai.db')
+        db = database_handler(namedb='src/baybai.db')
         popup_text = ""
         if uname == "" or passwd == "":
             popup_text="Please enter required fields"
@@ -132,12 +131,13 @@ class LoginScreen(MDScreen):
 
         if self.validate_login(uname, passwd)[0]:
             self.popup(self.validate_login(uname, passwd)[1])
-            Clock.schedule_once(lambda dt: self.move_to_home_screen(), 2)
+            self.parent.current = "HomeScreen"
+            # Clock.schedule_once(lambda dt: self.move_to_home_screen(), 2)
 
 class HomeScreen(MDScreen):
 
     def home2learn(self):
-        print("self.parent:", self.parent)  # Check the value of self.parent
+        # print("self.parent:", self.parent)  # Check the value of self.parent
         self.parent.current = "LearnScreen"
     def home2saved(self):
         self.parent.current = "SavedScreen"
@@ -194,6 +194,7 @@ class Learn_1_1_Screen(MDScreen):
     def __init__(self, **kwargs, ):
         super().__init__(**kwargs)
         self.flashcard_contents = ['']
+        self.saved_cards = []
 
     def on_enter(self, *args):
         global label_text
@@ -206,10 +207,21 @@ class Learn_1_1_Screen(MDScreen):
         db.close()
         self.tagalog, self.baybayin = zip(*word_pairs)
         self.is_tagalog = True  # Initially showing Tagalog
+        self.starred_states = [False] * len(self.tagalog)  # Initialize starred states for each card
         self.update_flashcard_content()
+
+    def backtolearn(self):
+        db = database_handler('src/baybai.db')
+        existing_cards = db.search2("SELECT * FROM saved")
+        for lvl, dex in self.saved_cards:
+            if (lvl, dex) not in existing_cards:
+                db.run_query(f"INSERT INTO saved (lvl, dex) VALUES ({lvl}, {dex})")
+        db.close()
+        self.parent.current = 'LearnScreen'
 
     def backtohome(self):
         baybai.backtohome(self)
+
 
     def next_card(self):
         self.current_card_index += 1
@@ -234,20 +246,118 @@ class Learn_1_1_Screen(MDScreen):
         self.update_flashcard_content()
 
     def update_flashcard_content(self):
+        # Update the flashcard content
         if self.is_tagalog:
             self.ids.flashcard_content.text = self.tagalog[self.current_card_index]
         else:
             self.ids.flashcard_content.text = self.baybayin[self.current_card_index]
+
+        # Update the star icon based on the starred state of the current card
+        if self.starred_states[self.current_card_index]:
+            self.ids.star_button.icon = "star"
+        else:
+            self.ids.star_button.icon = "star-outline"
+
         print(f'Index: {self.current_card_index}')
 
+    def toggle_star(self):
+        # Toggle the starred state for the current card
+        card_info = [self.level, self.current_card_index]
+        self.starred_states[self.current_card_index] = not self.starred_states[self.current_card_index]
 
-class Flashcards(MDScreen):
+        # Update the star icon and database based on the new starred state
+        if self.starred_states[self.current_card_index]:
+            self.ids.star_button.icon = "star"
+            if card_info not in self.saved_cards:
+                self.saved_cards.append(card_info)
+            print(f"Card starred: Index {self.current_card_index}, Level: {self.level}")
+
+        else:
+            self.ids.star_button.icon = "star-outline"
+            if card_info in self.saved_cards:
+                self.saved_cards.remove(card_info)
+            print(f"Card unstarred: Index {self.current_card_index}, Level: {self.level}")
+
+class SavedScreen(MDScreen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        db = database_handler(namedb='src/baybai.db')
+        self.content_indexes = db.search2(f"SELECT * from saved")
+        self.flashcard_contents = []
+        contents = []
+        for i,j in self.content_indexes:
+            content = db.search2(f"SELECT fro,bck from contents where lvl={i} and dex={j}")
+            contents.append(content[0])
+        print(contents)
+        self.tagalog,self.baybayin = zip(*contents)
+        self.tagalog, self.baybayin = list(self.tagalog),list(self.baybayin)
+        self.flashcard_contents = self.tagalog
+        self.current_card_index = 0
+        self.is_tagalog = True
+        self.dialog = None
     def backtohome(self):
         baybai.backtohome(self)
 
-class SavedScreen(MDScreen):
-    dialog=None
+    def flip_card(self):
+        self.is_tagalog = not self.is_tagalog  # Toggle between Tagalog and Baybayin
+        if self.ids.saved_card_input.md_bg_color == get_color_from_hex("#9851FF"):
+            self.ids.saved_card_input.md_bg_color = get_color_from_hex("#D346FF")
+            self.ids.saved_card_content.text = self.baybayin[self.current_card_index]
+        else:
+            self.ids.saved_card_input.md_bg_color = get_color_from_hex("#9851FF")
+            self.ids.saved_card_content.text = self.tagalog[self.current_card_index]
+        # self.update_flashcard_content()
 
+    def next_card(self):
+        self.current_card_index += 1
+        if self.current_card_index >= len(self.tagalog):  # Use length of tagalog list
+            self.current_card_index = 0  # Reset to the first card if we've reached the end
+        self.update_flashcard_content()
+
+    def prev_card(self):
+        self.current_card_index -= 1
+        if self.current_card_index >= len(self.tagalog):  # Use length of tagalog list
+            self.current_card_index = 0  # Reset to the first card if we've reached the end
+        self.update_flashcard_content()
+    def update_flashcard_content(self):
+        if self.flashcard_contents:
+            self.ids.saved_card_content.text = self.flashcard_contents[self.current_card_index]
+        else:
+            self.ids.saved_card_content.text = ""
+
+    def remove_flashcard(self, *args):
+        self.dialog.dismiss()
+        print(f"Content Indexes: {self.content_indexes}\nFlashcard Contents: {self.flashcard_contents}\nself.tagalog: {self.tagalog},\nself.baybayin: {self.baybayin}")
+        print(f"Current Index: {self.current_card_index}")
+        del self.tagalog[self.current_card_index]
+        del self.baybayin[self.current_card_index]
+        db = database_handler('src/baybai.db')
+        lvl,dex = self.content_indexes[self.current_card_index][0], self.content_indexes[self.current_card_index][1]
+        db.run_query(f"DELETE FROM saved where lvl={lvl} and dex={dex}")
+        db.close()
+        self.update_flashcard_content()
+    def toggle_star(self):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title='Remove Flashcard',
+                text='Are you sure you want to remove this flashcard from Saved Cards?',
+                buttons=[
+                    MDFlatButton(
+                        text='CANCEL',
+                        on_release=self.close_dialog
+                    ),
+                    MDFlatButton(
+                        text='REMOVE',
+                        on_release=self.remove_flashcard
+                    ),
+                ],
+            )
+        self.dialog.open()
+
+    def close_dialog(self, *args):
+        self.dialog.dismiss()
+class Flashcards(MDScreen):
+    pass
 class TranslateScreen(MDScreen):
     #ADD ERROR MESSAGE FOR WHEN WORD IS NOT TAGALOG.
     dialog=None
@@ -275,17 +385,7 @@ class StatsScreen(MDScreen):
     dialog=None
 
 class NetworkScreen(MDScreen):
-    def on_pre_enter(self, *args):
-        # Call a function here to fetch forum posts from your online source
-        # For example: forum_posts = fetch_forum_posts_from_api()
-
-        # For simplicity, let's assume forum_posts is a list of post titles
-        forum_posts = ["Post 1", "Post 2", "Post 3"]
-
-        # Add forum posts to the forum_posts MDList in the Network screen
-        for post_title in forum_posts:
-            list_item = OneLineListItem(text=post_title)
-            self.ids.forum_posts.add_widget(list_item)
+    pass
 
 class stats(MDScreen):
     dialog=None

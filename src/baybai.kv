@@ -1,14 +1,10 @@
 ScreenManager:
-#    LearnScreen:
-#        name: "LearnScreen"
-#    Learn_1_1_Screen:
-#        name: "Learn_1_1_Screen"
-    IntroScreen:
-        name:"IntroScreen"
-    SignUpScreen:
-        name:"SignUpScreen"
     LoginScreen:
         name:"LoginScreen"
+    SignUpScreen:
+        name:"SignUpScreen"
+    IntroScreen:
+        name:"IntroScreen"
     HomeScreen:
         name: "HomeScreen"
     Flashcards:
@@ -27,6 +23,226 @@ ScreenManager:
         name: "TranslateScreen"
 
 
+<SignUpScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        Image:
+            source: 'src/images/logo.png'
+            opacity: 0.7
+            size_hint: None, None  # This will disable the automatic sizing
+            size: dp(220), dp(220)  # Set the size of the image
+            allow_stretch: True  # Allow the image to be stretched
+            pos_hint: {"center_x":0.5, "center_y":0.7}
+            size_hint_y: 0.28
+
+        MDBoxLayout:
+            orientation:'vertical'
+            pos_hint: {"center_x":0.5, "center_y":0.5}
+            size_hint_y:0.9
+            spacing: dp(50)
+            MDLabel:
+                text:'Register'
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                font_name:'Helvetica'
+                bold:True
+                font_size:'50px'
+                halign: 'center'
+                md_bg_color: '#9851FF'
+                style:'h1'
+                pos_hint: {"center_x":0.5, "center_y":0.5}
+                size_hint_y: 0.1
+                height: self.texture_size[1] + dp(20)  # Adjust the 20 to your desired padding
+                padding: [dp(10), dp(10)]  # [padding_x, padding_y]
+            MDBoxLayout:
+                orientation:'vertical'
+                size_hint: 0.7, None
+                height: self.minimum_height
+#                md_bg_color: 'blue'
+                pos_hint: {"center_x":0.5, "center_y":0.5}
+                spacing: dp(10)
+                padding: dp(10)
+
+                MDTextField:
+                    hint_text: "Name"
+                    mode: "round"
+                    max_text_length: 15
+                    id:name
+                    font_name: "Helvetica"
+                    size_hint_y: None
+                    height: dp(48)
+
+                MDTextField:
+                    hint_text: "Username"
+                    mode: "round"
+                    max_text_length: 15
+                    font_name: "Helvetica"
+                    id:uname
+                    size_hint_y: None
+                    height: dp(48)
+
+                MDTextField:
+                    hint_text: "Password"
+                    mode: "round"
+                    max_text_length: 15
+                    password: True
+                    id:password
+                    size_hint_y: None
+                    font_name: "Helvetica"
+                    height: dp(48)
+
+                MDTextField:
+                    hint_text: "Confirm Password"
+                    mode: "round"
+                    max_text_length: 15
+                    password: True
+                    id: confirm_password
+                    size_hint_y: None
+                    height: dp(48)
+                    font_name: "Helvetica"
+                    helper_text_mode: 'persistent'
+
+            MDRoundFlatButton:
+                text: "[b]Register[/b]"
+                markup: True
+                font_size: "30px"
+                font_name: "Helvetica"
+                size_hint_y: None
+                size_hint_x: 0.5
+                height: dp(48)
+                text_color: 1, 1, 1, 1
+                on_press: root.try_register()
+                md_bg_color: "#9851FF"
+                pos_hint: {"center_x":0.5,"center_y":0.5}
+
+            MDTextButton:
+                text: "Already have an account? [u][color=#FF35DC]Log in here[/color][/u]"
+                custom_color: "#F08DA9"
+                markup: True
+                size_hint: 1, .25
+                halign: "center"
+                font_size: '25px'
+                font_name: 'Helvetica'
+                pos_hint: {"center_x":0.5,"center_y":.5}
+                on_press: root.login_screen()
+
+<LoginScreen>
+    MDBoxLayout:
+        orientation: 'vertical'
+        Image:
+            source: 'src/images/logo.png'
+            opacity: 0.7
+            size_hint: None, None  # This will disable the automatic sizing
+            size: dp(220), dp(220)  # Set the size of the image
+            allow_stretch: True  # Allow the image to be stretched
+            pos_hint: {"center_x":0.5, "center_y":0.7}
+            size_hint_y: 0.28
+
+        MDBoxLayout:
+            orientation:'vertical'
+            pos_hint: {"center_x":0.5, "center_y":0.5}
+            size_hint_y:0.9
+            spacing: dp(80)
+            MDLabel:
+                text:'Log in'
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                font_name:'Helvetica'
+                bold:True
+                font_size:'50px'
+                halign: 'center'
+                md_bg_color: '#E536FF'
+                style:'h1'
+                pos_hint: {"center_x":0.5, "center_y":0.5}
+                size_hint_y: 0.1
+                height: self.texture_size[1] + dp(20)  # Adjust the 20 to your desired padding
+                padding: [dp(10), dp(10)]  # [padding_x, padding_y]
+            MDBoxLayout:
+                orientation:'vertical'
+                size_hint: 0.7, None
+                height: self.minimum_height
+#                md_bg_color: 'blue'
+                pos_hint: {"center_x":0.5, "center_y":0.5}
+                spacing: dp(20)
+                padding: dp(10)
+
+                MDTextField:
+                    hint_text: "Username"
+                    mode: "round"
+                    max_text_length: 15
+                    font_name: "Helvetica"
+                    id:uname
+                    size_hint_y: None
+                    height: dp(48)
+
+                MDTextField:
+                    hint_text: "Password"
+                    mode: "round"
+                    max_text_length: 15
+                    password: True
+                    id:password
+                    size_hint_y: None
+                    font_name: "Helvetica"
+                    height: dp(48)
+
+            MDRoundFlatButton:
+                text: "[b]Log in[/b]"
+                markup: True
+                font_size: "30px"
+                font_name: "Helvetica"
+                size_hint_y: None
+                size_hint_x: 0.5
+                height: dp(48)
+                text_color: 1, 1, 1, 1
+                on_press: root.try_login()
+                md_bg_color: "#E536FF"
+                pos_hint: {"center_x":0.5,"center_y":0.5}
+
+            MDTextButton:
+                text: "Don't have an account? [u][color=#A34CFF]Register here[/color][/u]"
+                markup: True
+                size_hint: 1, .25
+                halign: "center"
+                font_size: '25px'
+                font_name: 'Helvetica'
+                pos_hint: {"center_x":0.5,"center_y":.5}
+                on_press: root.signup_screen()
+
+
+<IntroScreen>:
+    RelativeLayout:
+        AsyncImage:
+            source:'images/intro_ellipse.png'
+            allow_stretch: True
+            pos_hint: {'center_x': 0.5, 'center_y': 0.28}
+        AsyncImage:
+            source:'images/logo.png'
+            allow_stretch: True
+            size_hint: 0.8,0.8
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+
+#        MDBoxLayout:
+#            orientation:'vertical'
+        MDRoundFlatButton:
+            pos_hint:{"center_x":0.5, "center_y":0.4}
+            size_hint: 0.5, 0.06
+            text: "Register"
+            text_color: "black"
+            md_bg_color: 'FFA3E7'
+            line_color: 'E536FF'
+            font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
+            on_release:root.signup_screen()
+        MDRoundFlatButton:
+            pos_hint:{"center_x":0.5, "center_y":0.3}
+            text: "Log in"
+            text_color: "black"
+            font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
+            size_hint: 0.5, 0.06
+            line_color: "E536FF"
+            md_bg_color: 'white'
+            on_release:root.login_screen()
+
+
 <Learn_1_1_Screen>:
     MDBoxLayout:
         orientation: 'vertical'
@@ -38,7 +254,7 @@ ScreenManager:
                 icon:'images/arrow_back.png'
                 pos_hint: {'center_x': 0.4, 'center_y': 0.5}  # Position the button in the center
                 size_hint: 0.2,0.2
-                on_release:root.backtohome()
+                on_release:root.backtolearn()
             MDLabel:
                 text: root.label_text_main
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
@@ -81,23 +297,55 @@ ScreenManager:
                     size_hint_x: 0.1
                     on_release:root.prev_card()
 
-                MDCard:
-                    border_radius:20
-                    id: card_input
-                    radius:[14]
-                    md_bg_color: '#9851FF'
-                    size_hint: 0.7, 0.6
-                    pos_hint: {'center_x':.5,'center_y':0.7}
-                    on_release: root.flip_card()
+                FloatLayout:
+                    MDCard:
+                        border_radius:20
+                        id: card_input
+                        radius:[14]
+                        md_bg_color: '#9851FF'
+                        size_hint: 0.7, 0.6
+                        pos_hint: {'center_x':.5,'center_y':0.7}
+                        on_release: root.flip_card()
 
-                    MDLabel:
-                        text:root.flashcard_contents[0]
-                        halign: 'center'
-                        id: flashcard_content
-                        font_name: 'Noto'
-                        color: 'white'
-                        font_size: '250px'
-                        bold: True
+                        MDLabel:
+                            text:root.flashcard_contents[0]
+                            halign: 'center'
+                            id: flashcard_content
+                            font_name: 'Noto'
+                            color: 'white'
+                            font_size: '250px'
+                            bold: True
+
+                    MDIconButton:
+                        icon: 'star-outline'
+                        id: star_button
+                        pos_hint: {'center_x': 0.75, 'center_y': 0.95}
+                        size: '48dp', '48dp'
+                        on_release: root.toggle_star()
+#                BoxLayout:
+#                    orientation: 'vertical'
+#                    size: root.size
+#                    pos: root.pos
+#
+#                    FloatLayout:
+#                        size_hint_y: None
+#                        height: '48dp'
+#
+#                        MDIconButton:
+#                            icon: 'star-outline'
+#                            size_hint: None, None
+#                            size: '48dp', '48dp'
+#                            pos_hint: {'right': 1}
+#                            on_release: root.toggle_star()
+#
+#                        MDLabel:
+#                            text: root.flashcard_contents[0]
+#                            halign: 'center'
+#                            id: flashcard_content
+#                            font_name: 'Noto'
+#                            color: 'white'
+#                            font_size: '250px'
+#                            bold: True
 
                 MDIconButton:
                     icon:'images/arrow_next.png'
@@ -336,131 +584,7 @@ ScreenManager:
                             font_name:'Helvetica'
                             bold: True
 
-<IntroScreen>:
-    RelativeLayout:
-        AsyncImage:
-            source:'images/intro_ellipse.png'
-            allow_stretch: True
-            pos_hint: {'center_x': 0.5, 'center_y': 0.28}
-        AsyncImage:
-            source:'images/logo.png'
-            allow_stretch: True
-            size_hint: 0.8,0.8
-            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
 
-#        MDBoxLayout:
-#            orientation:'vertical'
-        MDRoundFlatButton:
-            pos_hint:{"center_x":0.5, "center_y":0.4}
-            size_hint: 0.5, 0.06
-            text: "Register"
-            text_color: "black"
-            md_bg_color: 'FFA3E7'
-            line_color: 'E536FF'
-            font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
-            on_release:root.signup_screen()
-        MDRoundFlatButton:
-            pos_hint:{"center_x":0.5, "center_y":0.3}
-            text: "Log in"
-            text_color: "black"
-            font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
-            size_hint: 0.5, 0.06
-            line_color: "E536FF"
-            md_bg_color: 'white'
-            on_release:root.login_screen()
-
-
-
-
-
-<SignUpScreen>:
-    MDBoxLayout:
-        orientation:'vertical'
-        pos_hint: {"center_x":0.5, "center_y":0.5}
-        size_hint: 0.7, 0.8
-        MDLabel:
-            text:'Sign up'
-            font_name:'Helvetica'
-            bold:True
-            font_size:'50px'
-            style:'h1'
-        MDBoxLayout:
-            orientation:'vertical'
-            spacing: 0.2
-            MDTextField:
-                hint_text: "Name"
-                mode: "round"
-                max_text_length: 15
-                id:name
-
-            MDTextField:
-                hint_text: "username"
-                mode: "round"
-                max_text_length: 15
-                id:uname
-
-            MDTextField:
-                hint_text: "Password"
-                mode: "round"
-                max_text_length: 15
-                id:password
-
-            MDTextField:
-                hint_text: "Confirm Password"
-                mode: "round"
-                max_text_length: 15
-                id: confirm_password
-
-            MDRoundFlatButton:
-                text: "Sign in"
-                on_press: root.try_register()
-
-        MDTextButton:
-            text: "Already have an account? Sign in here"
-            custom_color: "#F08DA9"
-            size_hint: 1, .25
-            halign: "center"
-            pos_hint: {"center_x":0.5,"center_y":.5}
-            on_press: root.login_screen()
-
-
-
-<LoginScreen>:
-    MDBoxLayout:
-        orientation:'vertical'
-        pos_hint: {"center_x":0.5, "center_y":0.5}
-        size_hint: 0.7, 0.8
-        MDLabel:
-            text:'Log in'
-            font_name:'Helvetica'
-            bold:True
-            font_size:'50px'
-            style:'h1'
-        MDBoxLayout:
-            orientation:'vertical'
-            spacing: 0.2
-            MDTextField:
-                hint_text: "username"
-                mode: "round"
-                max_text_length: 15
-                id: uname
-
-            MDTextField:
-                hint_text: "Password"
-                mode: "round"
-                max_text_length: 15
-                id: password
-        MDRoundFlatButton:
-            text: "Log in"
-            on_press: root.try_login()
-
-        MDTextButton:
-            text: "Don't have an account? Register here"
-            custom_color: "#F08DA9"
-            size_hint: 1, .25
-            halign: "center"
-            pos_hint: {"center_x":0.5,"center_y":.5}
-            on_press: root.signup_screen()
 
 <HomeScreen>:
     MDBoxLayout:
@@ -756,8 +880,89 @@ ScreenManager:
                 md_bg_color:'white'
 
 <SavedScreen>:
-    MDLabel:
-        text:'Saved Screen'
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y:0.12
+            MDIconButton:
+                icon:'images/arrow_back.png'
+                pos_hint: {'center_x': 0.4, 'center_y': 0.5}  # Position the button in the center
+                size_hint: 0.2,0.2
+                on_release:root.backtohome()
+            MDLabel:
+#                text: root.label_text_main
+                text: 'Saved Cards'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                valign:'center'
+                halign:'center'
+                font_name:'Helvetica'
+                font_size:'50px'
+                bold: True
+                size_hint:0.5,1
+            MDLabel:
+                text: "Progress Bar"
+                font_size: 15
+                pos_hint: {'center_x':.9,'center_y':0.5}
+                size_hint:0.2,1
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_y:0.88
+            pos_hint: {'center_x':.5,'center_y':0.3}
+
+            MDLabel:
+                text: 'What does this character transcribe to?'
+                size_hint_y: 0.05
+                valign:'center'
+                halign:'center'
+                font_name:'Helvetica'
+                font_size:'40px'
+                bold: True
+
+            #FLASHCARD
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+                MDIconButton:
+                    icon:'images/arrow_back.png'
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.7}  # Position the button in the center
+                    size_hint_x: 0.1
+                    on_release:root.prev_card()
+
+                FloatLayout:
+                    MDCard:
+                        border_radius:20
+                        id:saved_card_input
+                        radius:[14]
+                        md_bg_color: '#9851FF'
+                        size_hint: 0.7, 0.6
+                        pos_hint: {'center_x':.5,'center_y':0.7}
+                        on_release: root.flip_card()
+
+                        MDLabel:
+#                            text: 'sa'
+                            text:root.flashcard_contents[0]
+                            halign: 'center'
+                            id: saved_card_content
+                            font_name: 'Noto'
+                            color: 'white'
+                            font_size: '250px'
+                            bold: True
+
+                    MDIconButton:
+                        icon: 'star'
+                        id: saved_star_button
+                        pos_hint: {'center_x': 0.75, 'center_y': 0.95}
+                        size: '48dp', '48dp'
+                        on_release: root.toggle_star()
+
+                MDIconButton:
+                    icon:'images/arrow_next.png'
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.7}  # Position the button in the center
+                    size_hint_x: 0.1
+                    on_release:root.next_card()
 
 <StatsScreen>:
     MDLabel:
