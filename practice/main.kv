@@ -5,3 +5,26 @@ BoxLayout:
         text: 'Loading...'
         halign: 'center'
         theme_text_color: "Secondary"
+
+    MDTextField:
+        id: text_input
+        hint_text: "Enter text"
+        size_hint_x: None
+        width: 300
+        pos_hint: {"center_x": 0.5}
+
+    MDRaisedButton:
+        text: "Send Text"
+        pos_hint: {"center_x": 0.5}
+        on_release: app.send_data()
+
+    MDRaisedButton:
+        text: "GET STRING"
+        pos_hint: {"center_x": 0.5}
+        on_release: app.get_string()
+
+    MDLabel:
+        id: response_label
+        text: "Response will be shown here"
+        halign: 'center'
+        theme_text_color: "Secondary"

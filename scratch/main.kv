@@ -1,0 +1,108 @@
+ScreenManager:
+    SignUpScreen:
+        name:"SignUpScreen"
+
+
+
+<SignUpScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        Image:
+            source: 'src/images/logo.png'
+            opacity: 0.7
+            size_hint: None, None  # This will disable the automatic sizing
+            size: dp(220), dp(220)  # Set the size of the image
+            allow_stretch: True  # Allow the image to be stretched
+            pos_hint: {"center_x":0.5, "center_y":0.7}
+            size_hint_y: 0.28
+
+        MDBoxLayout:
+            orientation:'vertical'
+            pos_hint: {"center_x":0.5, "center_y":0.5}
+            size_hint_y:0.9
+            spacing: dp(50)
+            MDLabel:
+                text:'Register'
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                font_name:'Helvetica'
+                bold:True
+                font_size:'50px'
+                halign: 'center'
+                md_bg_color: '#9851FF'
+                style:'h1'
+                pos_hint: {"center_x":0.5, "center_y":0.5}
+                size_hint_y: 0.1
+                height: self.texture_size[1] + dp(20)  # Adjust the 20 to your desired padding
+                padding: [dp(10), dp(10)]  # [padding_x, padding_y]
+            MDBoxLayout:
+                orientation:'vertical'
+                size_hint: 0.7, None
+                height: self.minimum_height
+#                md_bg_color: 'blue'
+                pos_hint: {"center_x":0.5, "center_y":0.5}
+                spacing: dp(10)
+                padding: dp(10)
+
+                MDTextField:
+                    hint_text: "Name"
+                    mode: "round"
+                    max_text_length: 15
+                    id:name
+                    font_name: "Helvetica"
+                    size_hint_y: None
+                    height: dp(48)
+
+                MDTextField:
+                    hint_text: "Username"
+                    mode: "round"
+                    max_text_length: 15
+                    font_name: "Helvetica"
+                    id:uname
+                    size_hint_y: None
+                    height: dp(48)
+
+                MDTextField:
+                    hint_text: "Password"
+                    mode: "round"
+                    max_text_length: 15
+                    password: True
+                    id:password
+                    size_hint_y: None
+                    font_name: "Helvetica"
+                    height: dp(48)
+
+                MDTextField:
+                    hint_text: "Confirm Password"
+                    mode: "round"
+                    max_text_length: 15
+                    password: True
+                    id: confirm_password
+                    size_hint_y: None
+                    height: dp(48)
+                    font_name: "Helvetica"
+                    helper_text_mode: 'persistent'
+
+            MDRoundFlatButton:
+                text: "[b]Register[/b]"
+                markup: True
+                font_size: "30px"
+                font_name: "Helvetica"
+                size_hint_y: None
+                size_hint_x: 0.5
+                height: dp(48)
+                text_color: 1, 1, 1, 1
+                on_press: root.try_register()
+                md_bg_color: "#9851FF"
+                pos_hint: {"center_x":0.5,"center_y":0.5}
+
+            MDTextButton:
+                text: "Already have an account? [u][color=#FF35DC]Log in here[/color][/u]"
+                custom_color: "#F08DA9"
+                markup: True
+                size_hint: 1, .25
+                halign: "center"
+                font_size: '25px'
+                font_name: 'Helvetica'
+                pos_hint: {"center_x":0.5,"center_y":.5}
+                on_press: root.login_screen()
