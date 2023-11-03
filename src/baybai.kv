@@ -1,12 +1,12 @@
 ScreenManager:
+    HomeScreen:
+        name: "HomeScreen"
+    IntroScreen:
+        name:"IntroScreen"
     LoginScreen:
         name:"LoginScreen"
     SignUpScreen:
         name:"SignUpScreen"
-    IntroScreen:
-        name:"IntroScreen"
-    HomeScreen:
-        name: "HomeScreen"
     Flashcards:
         name: "Flashcards"
     SavedScreen:
@@ -630,7 +630,7 @@ ScreenManager:
                         border_radius:20
                         radius:[14]
                         size_hint_x:0.38
-                        on_release:root.home2learn()
+                        on_release:root.tolearn()
                         Image:
                             source:'images/Learn.png'
                             allow_stretch:True

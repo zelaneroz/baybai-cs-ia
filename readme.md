@@ -81,7 +81,72 @@ Figure 2. Wireframe of the mobile application
 | 1       | Functional: Test  whether the SignUp screen succesfully registers new user if all entries are valid. | Oct 8 | Run python file (spentio.py). Go to sign up screen and enter the following values: <br/>- email: bob@isak<br/>- username: bob<br/>-password: bob123                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | When the database, spentio.db is checked, a new row of data can be seen. This row shows the entered email, username, and password encrypted using a certain hash.                                                                                                                                   |
 | 2       | Translation: Test the translation function.                                                          | Oct 8 | Using a Kaggle database from the University of the Philippines                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |                                                                                                                                                                                                                                                                                                     |
 
+# Criteria C: Development
+## Tools Used
 
+## Explanation of Techniques and Evidence
+
+### Registration System (Local Storage)
+```pycon
+class SignUpScreen(MDScreen):
+    def login_screen(self):
+        self.parent.current = "LoginScreen"
+
+    def popup(self,out: str):
+        self.dialog = MDDialog(text=out)
+        self.dialog.open()
+
+    def validate_register(self, uname: str, pass1: str, conpass: str):
+        db = database_handler(namedb='baybai.db')
+        popup_text = ""
+
+        if uname in db.search(f"SELECT uname FROM users WHERE uname='{uname}'"):
+            popup_text += f"Username [color=0000FF]{uname}[/color] already exists."
+        elif len(pass1) <= 6:
+            popup_text += "\nPassword needs to be longer than 6 characters."
+        elif pass1 != conpass:
+            popup_text += "\nPasswords don't match."
+        else:
+            return True
+
+        popup_text += "\nPlease try again."
+        db.close()
+        self.popup(popup_text)
+        return False
+
+    def try_register(self):
+        db = database_handler(namedb='baybai.db')
+        db.run_query("""CREATE TABLE if not exists users(
+                        id INTEGER primary key autoincrement,
+                        name TEXT not null,
+                        uname TEXT not null,
+                        password TEXT not null);""")
+        #TAKE ALL INPUTS, VALIDATE, AND APPEND TO DATABASE
+        name,uname,pass1,con_pass = self.ids.name.text,self.ids.uname.text,self.ids.password.text,self.ids.confirm_password.text
+
+        if self.validate_register(uname, pass1, con_pass):
+            db.run_query(f"INSERT INTO USERS (name,uname,password) VALUES ('{name}','{uname}','{encrypt_password(pass1)}')")
+            self.popup("[color=ACFF3C]Registration completed. Welcome![/color]")
+            db.close()
+
+            self.ids.name.text,self.ids.uname.text,self.ids.password.text,self.ids.confirm_password.text="","","",""
+            current_user = uname
+            self.parent.current = "HomeScreen"
+    
+    def clear_inputs(self):
+        self.ids.name.text = ""
+        self.ids.uname.text = ""
+        self.ids.password.text = ""
+        self.ids.confirm_password.text = ""
+```
+
+In this code snippet from the `SignUpScreen` class of the 'Baybai' application, several methods are defined to manage the user registration process. The 'login_screen' method (line 3) facilitates user navigation by allowing them to switch to the login screen if they already have an existing account. The 'popup' method (line 6-10) is responsible for generating and displaying pop-up dialogs, which provide crucial user feedback throughout the registration process.
+
+The core functionality is encapsulated within the `validate_register` method (line 13-32). This method performs various checks to validate user-provided registration information. Firstly, it verifies if the entered username already exists in the database, alerting users if their chosen username is already in use. Secondly, it ensures that the password entered is at least 6 characters long, thus enforcing a minimum security threshold. Lastly, it compares the password and confirm password fields to confirm they match. If any of these checks fail, the method constructs an error message for the user. If all validations succeed, it returns 'True'; otherwise, it displays the relevant error messages in a pop-up dialog, guiding users to correct their input.
+
+The 'try_register' method (line 35-55) manages the actual registration process. It begins by initializing a connection to the database, creating a 'users' table if it does not already exist. It then retrieves user input for name, username, password, and confirm password. If these inputs pass the validation checks carried out by the 'validate_register' method, the user's password is securely hashed before being inserted into the 'users' table in the database. Following a successful registration, users receive a pop-up dialog with a message confirming their registration and are then presented with cleared input fields to facilitate a seamless experience.
+
+The 'clear_inputs' method (line 58-62) serves the purpose of resetting all input fields on the registration screen, simplifying the correction of erroneous inputs by users. This code follows best practices in coding, including clear and meaningful method and variable naming, error handling, and the use of pop-up dialogs to provide valuable feedback to users during the registration process.
 
 # Appendix
 ## <a id="ap-a"> Appendix A. Client Interview </a>

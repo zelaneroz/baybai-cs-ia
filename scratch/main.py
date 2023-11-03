@@ -4,6 +4,7 @@ from kivy.core.window import Window
 Window.size = (375,812)
 from kivy.core.text import LabelBase
 from database_handler import  database_handler
+from encrypt import encrypt_password
 from kivy.uix.screenmanager import ScreenManager
 from kivy.lang import Builder
 from kivymd.app import MDApp
@@ -36,7 +37,7 @@ class SignUpScreen(MDScreen):
         return False
 
     def try_register(self):
-        db = database_handler(namedb='src/baybai.db')
+        db = database_handler(namedb='sample2.db')
         db.run_query("""CREATE TABLE if not exists users(
                         id INTEGER primary key autoincrement,
                         name TEXT not null,

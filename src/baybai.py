@@ -1,3 +1,4 @@
+from kivy.core.text import LabelBase
 from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
 from kivy.lang import Builder
@@ -13,21 +14,15 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.core.window import Window
-from kivymd.uix.label import MDLabel
 Window.size = (375,812)
-from kivy.core.text import LabelBase
-#https://zavoloklom.github.io/material-design-iconic-font/icons.html#new
-from kivymd.uix.textfield import MDTextFieldRect
-from kivymd.uix.textfield import  MDTextField
+from kivymd.uix.label import MDLabel
+from kivymd.uix.textfield import MDTextFieldRect, MDTextField
 from syllabify import translate, syllabify
-from kivymd.uix.screen import MDScreen
 from kivymd.uix.list import OneLineListItem
-
 import pyperclip
 from kivy.clock import Clock
 from encrypt import encrypt_password, check_password
-import sqlite3
-from kivy.clock import Clock
+
 
 currrent_user = ""
 class database_handler:
@@ -65,7 +60,7 @@ class SignUpScreen(MDScreen):
         self.dialog.open()
 
     def validate_register(self, uname: str, pass1: str, conpass: str):
-        db = database_handler(namedb='src/baybai.db')
+        db = database_handler(namedb='baybai.db')
         popup_text = ""
 
         if uname in db.search(f"SELECT uname FROM users WHERE uname='{uname}'"):
@@ -78,11 +73,12 @@ class SignUpScreen(MDScreen):
             return True
 
         popup_text += "\nPlease try again."
+        db.close()
         self.popup(popup_text)
         return False
 
     def try_register(self):
-        db = database_handler(namedb='src/baybai.db')
+        db = database_handler(namedb='baybai.db')
         db.run_query("""CREATE TABLE if not exists users(
                         id INTEGER primary key autoincrement,
                         name TEXT not null,
@@ -98,7 +94,14 @@ class SignUpScreen(MDScreen):
 
             self.ids.name.text,self.ids.uname.text,self.ids.password.text,self.ids.confirm_password.text="","","",""
             current_user = uname
+            self.clear_inputs()
             self.parent.current = "HomeScreen"
+
+    def clear_inputs(self):
+        self.ids.name.text = ""
+        self.ids.uname.text = ""
+        self.ids.password.text = ""
+        self.ids.confirm_password.text = ""
 class LoginScreen(MDScreen):
     def popup(self,out: str):
         self.dialog = MDDialog(text=out)
@@ -110,7 +113,7 @@ class LoginScreen(MDScreen):
         self.parent.current = "HomeScreen"
 
     def validate_login(self,uname:str,passwd:str):
-        db = database_handler(namedb='src/baybai.db')
+        db = database_handler(namedb='baybai.db')
         popup_text = ""
         if uname == "" or passwd == "":
             popup_text="Please enter required fields"
@@ -132,22 +135,19 @@ class LoginScreen(MDScreen):
         if self.validate_login(uname, passwd)[0]:
             self.popup(self.validate_login(uname, passwd)[1])
             self.parent.current = "HomeScreen"
-            # Clock.schedule_once(lambda dt: self.move_to_home_screen(), 2)
+            Clock.schedule_once(lambda dt: self.move_to_home_screen(), 2)
 
 class HomeScreen(MDScreen):
-
-    def home2learn(self):
-        # print("self.parent:", self.parent)  # Check the value of self.parent
-        self.parent.current = "LearnScreen"
+    def tolearn(self):
+        self.manager.current = 'LearnScreen'
     def home2saved(self):
-        self.parent.current = "SavedScreen"
+        self.manager.current = "SavedScreen"
     def home2translate(self):
-        self.parent.current = "TranslateScreen"
+        self.manager.current = "TranslateScreen"
     def home2stats(self):
-        self.parent.current = "StatsScreen"
+        self.manager.current = "StatsScreen"
     def home2net(self):
-        self.parent.current = "NetworkScreen"
-
+        self.manager.current = "NetworkScreen"
 
 level = 1
 label_text = ""
@@ -202,7 +202,7 @@ class Learn_1_1_Screen(MDScreen):
         self.label_text_main = label_text
         self.current_card_index = 0
         self.level = level
-        db = database_handler(namedb='src/baybai.db')
+        db = database_handler(namedb='baybai.db')
         word_pairs = db.search2(f"SELECT fro,bck FROM contents where lvl is {level}")
         db.close()
         self.tagalog, self.baybayin = zip(*word_pairs)
@@ -211,7 +211,7 @@ class Learn_1_1_Screen(MDScreen):
         self.update_flashcard_content()
 
     def backtolearn(self):
-        db = database_handler('src/baybai.db')
+        db = database_handler('baybai.db')
         existing_cards = db.search2("SELECT * FROM saved")
         for lvl, dex in self.saved_cards:
             if (lvl, dex) not in existing_cards:
@@ -331,7 +331,7 @@ class SavedScreen(MDScreen):
         print(f"Current Index: {self.current_card_index}")
         del self.tagalog[self.current_card_index]
         del self.baybayin[self.current_card_index]
-        db = database_handler('src/baybai.db')
+        db = database_handler('baybai.db')
         lvl,dex = self.content_indexes[self.current_card_index][0], self.content_indexes[self.current_card_index][1]
         db.run_query(f"DELETE FROM saved where lvl={lvl} and dex={dex}")
         db.close()
