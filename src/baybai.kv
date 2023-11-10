@@ -1,4 +1,6 @@
 ScreenManager:
+    NetworkScreen:
+        name: "NetworkScreen"
     HomeScreen:
         name: "HomeScreen"
     IntroScreen:
@@ -13,14 +15,61 @@ ScreenManager:
         name: "SavedScreen"
     StatsScreen:
         name: "StatsScreen"
-    NetworkScreen:
-        name: "NetworkScreen"
     Learn_1_1_Screen:
         name: "Learn_1_1_Screen"
     LearnScreen:
         name: "LearnScreen"
     TranslateScreen:
         name: "TranslateScreen"
+
+<NetworkScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        #-----UPPER BAR-----
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.10
+            md_bg_color: 'red'
+
+        #-----CONTENT-----
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.75
+            #---CREATE POST BUTTON ---
+            #-----POSTS-----
+            MDCard:
+                text: 'dummy post'
+                md_bg_color: 'purple'
+
+
+        #-----NAVIGATION BAR-----
+        #NETWORK ICON --> ACTIVATE
+
+        MDBottomNavigation:
+            size_hint_y:0.15
+            panel_color: 'red'
+
+            MDBottomNavigationItem:
+                name: 'home'
+                text: 'Home'
+                icon:'images/icon-home.png'
+                icon:'home'
+                size_hint_x:0.38
+
+            MDBottomNavigationItem:
+                name: 'stats'
+                text: 'Saved'
+                icon: 'images/icon-star-on.png'
+                size_hint_x:0.38
+                on_tab_touch_down:root.home2stats()
+
+            MDBottomNavigationItem:
+                name: 'network'
+                text: 'Network'
+                icon: 'images/icon-network.png'
+                size_hint_x:0.38
+
+
 
 
 <SignUpScreen>:
@@ -689,7 +738,7 @@ ScreenManager:
 
                 MDBottomNavigationItem:
                     name: 'network'
-                    text: 'Community'
+                    text: 'Network'
                     icon: 'images/icon-network.png'
                     size_hint_x:0.38
                     on_tab_touch_down:root.home2net()

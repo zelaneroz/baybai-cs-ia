@@ -102,10 +102,12 @@ class SignUpScreen(MDScreen):
         self.ids.uname.text = ""
         self.ids.password.text = ""
         self.ids.confirm_password.text = ""
+
 class LoginScreen(MDScreen):
     def popup(self,out: str):
         self.dialog = MDDialog(text=out)
         self.dialog.open()
+
     def signup_screen(self):
         self.parent.current = "SignUpScreen"
 
