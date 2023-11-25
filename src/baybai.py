@@ -15,6 +15,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.core.window import Window
 Window.size = (375,812)
+from kivymd.uix.bottomnavigation import MDBottomNavigation, MDBottomNavigationItem
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextFieldRect, MDTextField
 from syllabify import translate, syllabify
@@ -22,8 +23,23 @@ from kivymd.uix.list import OneLineListItem
 import pyperclip
 from kivy.clock import Clock
 from encrypt import encrypt_password, check_password
+from kivymd.uix.list import OneLineListItem, MDList,OneLineAvatarIconListItem, IconLeftWidget
+from kivymd.uix.scrollview import MDScrollView
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
+from kivymd.uix.card import MDCard
+from kivymd.uix.label import MDLabel
+from kivy.core.window import Window
+from kivy.graphics import Color, Line  # Import Color and Line
+from kivy.core.text import LabelBase
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.app import MDApp
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDIconButton
+from kivymd.uix.list import MDList
 
-
+path = 'src/baybai.db'
 currrent_user = ""
 class database_handler:
     def __init__(self,namedb:str):
@@ -60,7 +76,9 @@ class SignUpScreen(MDScreen):
         self.dialog.open()
 
     def validate_register(self, uname: str, pass1: str, conpass: str):
-        db = database_handler(namedb='baybai.db')
+        global path
+        db = database_handler(namedb=path)
+        print('!!!!!PATH: ', path)
         popup_text = ""
 
         if uname in db.search(f"SELECT uname FROM users WHERE uname='{uname}'"):
@@ -78,7 +96,8 @@ class SignUpScreen(MDScreen):
         return False
 
     def try_register(self):
-        db = database_handler(namedb='baybai.db')
+        global path
+        db = database_handler(namedb=path)
         db.run_query("""CREATE TABLE if not exists users(
                         id INTEGER primary key autoincrement,
                         name TEXT not null,
@@ -112,10 +131,11 @@ class LoginScreen(MDScreen):
         self.parent.current = "SignUpScreen"
 
     def move_to_home_screen(self):
-        self.parent.current = "HomeScreen"
+        self.manager.current = "HomeScreen"
 
     def validate_login(self,uname:str,passwd:str):
-        db = database_handler(namedb='baybai.db')
+        global path
+        db = database_handler(namedb=path)
         popup_text = ""
         if uname == "" or passwd == "":
             popup_text="Please enter required fields"
@@ -130,11 +150,14 @@ class LoginScreen(MDScreen):
         return False, popup_text
 
     def try_login(self):
-        db = database_handler(namedb='baybai.db')
+        global path
+        db = database_handler(namedb=path)
         uname,passwd = self.ids.uname.text,self.ids.password.text
         db.close()
+        global currrent_user
 
         if self.validate_login(uname, passwd)[0]:
+            currrent_user = uname
             self.popup(self.validate_login(uname, passwd)[1])
             self.parent.current = "HomeScreen"
             Clock.schedule_once(lambda dt: self.move_to_home_screen(), 2)
@@ -201,10 +224,11 @@ class Learn_1_1_Screen(MDScreen):
     def on_enter(self, *args):
         global label_text
         global level
+        global path
         self.label_text_main = label_text
         self.current_card_index = 0
         self.level = level
-        db = database_handler(namedb='baybai.db')
+        db = database_handler(namedb=path)
         word_pairs = db.search2(f"SELECT fro,bck FROM contents where lvl is {level}")
         db.close()
         self.tagalog, self.baybayin = zip(*word_pairs)
@@ -213,7 +237,8 @@ class Learn_1_1_Screen(MDScreen):
         self.update_flashcard_content()
 
     def backtolearn(self):
-        db = database_handler('baybai.db')
+        global path
+        db = database_handler(path)
         existing_cards = db.search2("SELECT * FROM saved")
         for lvl, dex in self.saved_cards:
             if (lvl, dex) not in existing_cards:
@@ -283,7 +308,8 @@ class Learn_1_1_Screen(MDScreen):
 class SavedScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        db = database_handler(namedb='src/baybai.db')
+        global path
+        db = database_handler(namedb=path)
         self.content_indexes = db.search2(f"SELECT * from saved")
         self.flashcard_contents = []
         contents = []
@@ -329,11 +355,12 @@ class SavedScreen(MDScreen):
 
     def remove_flashcard(self, *args):
         self.dialog.dismiss()
+        global path
         print(f"Content Indexes: {self.content_indexes}\nFlashcard Contents: {self.flashcard_contents}\nself.tagalog: {self.tagalog},\nself.baybayin: {self.baybayin}")
         print(f"Current Index: {self.current_card_index}")
         del self.tagalog[self.current_card_index]
         del self.baybayin[self.current_card_index]
-        db = database_handler('baybai.db')
+        db = database_handler(path)
         lvl,dex = self.content_indexes[self.current_card_index][0], self.content_indexes[self.current_card_index][1]
         db.run_query(f"DELETE FROM saved where lvl={lvl} and dex={dex}")
         db.close()
@@ -387,6 +414,137 @@ class StatsScreen(MDScreen):
     dialog=None
 
 class NetworkScreen(MDScreen):
+    def __init__(self, **kwargs):
+        super(NetworkScreen, self).__init__(**kwargs)
+
+        # FONTS
+        LabelBase.register(name='Helvetica', fn_regular='fonts/HelveticaNeue-01.ttf',
+                           fn_bold='fonts/HelveticaNeue-Bold-02.ttf',
+                           fn_bolditalic='fonts/HelveticaNeue-BoldItalic-04.ttf',
+                           fn_italic='fonts/HelveticaNeue-Italic-03.ttf')
+
+        # Main layout
+        main_layout = BoxLayout(orientation='vertical',spacing=50)
+
+        # Upper bar
+        upper_bar = BoxLayout(orientation='horizontal', size_hint_y=0.10)
+
+        back_arrow = MDIconButton(icon='images/arrow_back.png',pos_hint={'center_x': 0.2, 'center_y': 0.5})
+        back_arrow.bind(on_release=self.backtohome)
+
+        logo_image = Image(source='images/logo_b.png', size_hint=(None, None), size=(dp(220), dp(220)),
+                           allow_stretch=True, pos_hint={"center_y": 0.5}, size_hint_y=0.7, opacity=0.7)
+        title = MDLabel(text='BaiNet', font_name='Helvetica', bold=True, font_size=dp(90))
+
+        upper_bar.add_widget(back_arrow)
+        upper_bar.add_widget(logo_image)
+        upper_bar.add_widget(title)
+
+
+
+
+        #CONTENT
+        content_layout = BoxLayout(orientation='vertical', size_hint=(0.9, 0.8),
+                                   pos_hint={'center_x': 0.5, 'center_y': 0.5}, spacing=40, padding=[0, 30, 20, 0])
+        create_post_button = MDFlatButton(text='Create post', md_bg_color=(1, 0.19, 0.76, 1),
+                                          size_hint_x=1.0, size_hint_y=0.05,
+                                          font_name='Helvetica')
+        create_post_button.bind(on_release=self.create_post)
+
+
+
+        super(NetworkScreen, self).__init__(**kwargs)
+        # Register fonts here if needed, or better, do it in the build method of your app
+        scroll_view = ScrollView(size_hint=(0.8, None), size=(Window.width, Window.height),
+                                 pos_hint={"center_x": 0.5, "center_y": 0.5})
+        scroll_view.add_widget(CardList())
+        posts_scrolls = BoxLayout(size_hint=(1.0, 0.8),spacing=10,orientation='vertical',pos_hint={'center_x':0.5,'center_y':0.5})
+
+
+        content_layout.add_widget(create_post_button)
+        # content_layout.add_widget(scroll_view)
+        posts_scrolls.add_widget(scroll_view)
+        content_layout.add_widget(posts_scrolls)
+
+        main_layout.add_widget(upper_bar)
+        main_layout.add_widget(content_layout)
+
+        self.add_widget(main_layout)
+
+
+    def create_post(self,instance):
+        self.manager.current = "CreatePostScreen"
+
+    def backtohome(self,instance):
+        self.manager.current = "HomeScreen"
+
+from kivy.uix.image import Image
+from kivy.metrics import dp
+
+
+class CardList(BoxLayout):
+    def __init__(self, **kwargs):
+        super(CardList, self).__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.size_hint_y = None
+        self.bind(minimum_height=self.setter('height'))
+
+
+        md_list = MDList()  # Create an MDList
+
+        # Add cards to the layout
+        for i in range(10):  # Example: Creating 10 cards
+            # container = BoxLayout(padding="10dp", size_hint_y=None, height="200dp")
+            container = BoxLayout(size_hint_y=None, height="200dp")
+            card = MDCard(size_hint_y=None, size_hint_x=0.5, height=200)
+
+            card.canvas.before.add(Color(rgba=(0, 0, 0, 1)))
+            card.canvas.before.add(Line(width=5, rectangle=(card.x + 1, card.y + 1, card.width - 2, card.height - 2)))
+            left_box = MDBoxLayout(size_hint=(0.15, 1), md_bg_color=(0.6, 0.31, 1, 1), orientation='vertical')
+
+            # Upvote button
+            upvote_button = MDIconButton(icon="images/arrow-up.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
+            upvote_button.bind(on_release=self.upvote_post)
+            left_box.add_widget(upvote_button)
+
+            # Downvote button
+            downvote_button = MDIconButton(icon="images/arrow-down.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
+            downvote_button.bind(on_release=self.downvote_post)
+            left_box.add_widget(downvote_button)
+
+            card.add_widget(left_box)
+
+            right_box = MDBoxLayout(size_hint=(0.85, 1), orientation='vertical')
+            user_box = MDBoxLayout(orientation='horizontal', padding=[40, 0, 0, 0])
+            user_box.add_widget(MDLabel(text='username', font_name='Helvetica', font_size='25px'))
+            user_box.add_widget(MDLabel(text='Sep 12 2023',font_name='Helvetica', font_size='18', theme_text_color='Custom', text_color=(0.28, 0.28, 0.28, 1)))
+            right_box.add_widget(user_box)
+            right_box.add_widget(MDLabel(text='Lorem ipsum dolor sit amet, consectetur adipiscing elit...', font_name='Helvetica', font_size='22sp', halign='center'))
+
+            card.add_widget(right_box)
+
+            container.add_widget(card)
+            md_list.add_widget(container)
+
+        self.add_widget(md_list)
+
+    def downvote_post(self,instance):
+        print("Downvote triggered")
+        pass
+
+    def upvote_post(self,instance):
+        print("Upvote triggered")
+        pass
+
+    def net2home(self):
+        self.manager.current = "HomeScreen"
+
+    def net2stats(self):
+        self.manager.current = "StatsScreen"
+
+
+
+class CreatePostScreen(MDScreen):
     pass
 
 class stats(MDScreen):
@@ -402,10 +560,17 @@ class baybai(MDApp):
         screen_manager = ScreenManager()
         home_screen = HomeScreen(name='HomeScreen')  # Create an instance of your HomeScreen
         learn_screen = LearnScreen(name='LearnScreen')
+        scroll_view = ScrollView(size_hint=(0.8, None), size=(Window.width, Window.height),
+                                 pos_hint={"center_x": 0.5, "center_y": 0.5})
+        scroll_view.add_widget(CardList())
+        network_screen = LearnScreen(name='NetworkScreen')
+        network_screen.add_widget(scroll_view)
         screen_manager.add_widget(home_screen)  # Add the HomeScreen to the ScreenManager
         screen_manager.add_widget(learn_screen)
-        return Builder.load_file('baybai.kv')
 
+
+
+        return Builder.load_file('baybai.kv')
 
 test = baybai()
 test.run()

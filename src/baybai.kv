@@ -1,14 +1,16 @@
 ScreenManager:
     NetworkScreen:
         name: "NetworkScreen"
-    HomeScreen:
-        name: "HomeScreen"
-    IntroScreen:
-        name:"IntroScreen"
+    CreatePostScreen:
+        name: "CreatePostScreen"
     LoginScreen:
         name:"LoginScreen"
+    IntroScreen:
+        name:"IntroScreen"
     SignUpScreen:
         name:"SignUpScreen"
+    HomeScreen:
+        name: "HomeScreen"
     Flashcards:
         name: "Flashcards"
     SavedScreen:
@@ -22,52 +24,552 @@ ScreenManager:
     TranslateScreen:
         name: "TranslateScreen"
 
+
 <NetworkScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1  # White color
+
+
+
+
+<CreatePostScreen>
     MDBoxLayout:
         orientation: 'vertical'
         #-----UPPER BAR-----
         MDBoxLayout:
             orientation: 'horizontal'
             size_hint_y: 0.10
-            md_bg_color: 'red'
+#            md_bg_color: 'red'
+            Image:
+                source: 'src/images/logo_b.png'
+#                opacity: 0.7
+                size_hint: None, None  # This will disable the automatic sizing
+                size: dp(220), dp(220)  # Set the size of the image
+                allow_stretch: True  # Allow the image to be stretched
+                pos_hint: {"center_y":0.5}
+                size_hint_y: 0.7
+
 
         #-----CONTENT-----
         MDBoxLayout:
             orientation: 'vertical'
-            size_hint_y: 0.75
-            #---CREATE POST BUTTON ---
-            #-----POSTS-----
+            size_hint: 0.9, 0.8
+            pos_hint: {'center_x':0.5,'center_y':0.5}
+            spacing: 40
+            padding: [0, 30, 20, 0] # Left, Top, Right, Bottom padding in dp or pixels
+
             MDCard:
-                text: 'dummy post'
-                md_bg_color: 'purple'
+                radius:0
+                size_hint: 1.0, 0.5
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Color of the border (black)
+                    Line:
+                        width: 2  # Width of the border line
+                        rectangle: (self.x + 1, self.y + 1, self.width - 2, self.height - 2)
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        md_bg_color: '#F030C3'
+                        MDLabel:
+                            text:"arrow"
+                        MDLabel:
+                            text:"Create post"
+                    MDBoxLayout:
+                        orientation: 'vertical'
+
+                        MDTextField:
+                            hint_text: "Title"
+                            mode: "round"
+                            max_text_length: 15
+                            font_name: "Helvetica"
+                            id:uname
+                            size_hint_y: None
+                            height: dp(48)
+
+                        MDTextField:
+                            hint_text: "Text (optional)"
+                            mode: "round"
+                            max_text_length: 300
+                            id:password
+                            size_hint_y: None
+                            font_name: "Helvetica"
+                            height: dp(48)
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 20
+
+                        MDRoundFlatButton:
+                            text:'Cancel'
+                            line_color: 'FF00CE'
+                            text_color: "FF00CE"
+                        MDRoundFlatButton:
+                            text:'Post'
+                            md_bg_color: '#FF00CE'
+                            text_color: "white"
+                            line_color: 'FF00CE'
+                            font_name: 'fonts/HelveticaNeue-01.ttf'
 
 
+
+#            md_bg_color: 'purple'
+#            #---CREATE POST BUTTON ---
+#            MDFlatButton:
+#                text: 'Create post'
+#                md_bg_color: 'F030C3'
+#                size_hint_x: 1.0
+#                size_hint_y: 0.05
+##                text_color: 1, 1, 1, 1
+#                font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
+#                on_release:root.create_post()
+
+
+
+#
+#        MDBottomNavigation:
+#            size_hint_y:0.15
+#            panel_color: 'red'
+#
+#            MDBottomNavigationItem:
+#                id:bottom_nav_network
+#                name: 'home'
+#                text: 'Home'
+#                icon:'images/icon-home.png'
+#                icon:'home'
+#                size_hint_x:0.38
+#                on_tab_touch_down:root.net2home()
+#
+#            MDBottomNavigationItem:
+#                name: 'stats'
+#                text: 'Saved'
+#                icon: 'images/icon-star-on.png'
+#                size_hint_x:0.38
+#                on_tab_touch_down:root.net2stats()
+#
+#            MDBottomNavigationItem:
+#                name: 'network'
+#                text: 'Network'
+#                icon: 'images/icon-network.png'
+#                size_hint_x:0.38
+
+
+
+
+
+
+#<NetworkScreen>:
+#    canvas.before:
+#        Color:
+#            rgba: 1, 1, 1, 1  # White color
+#
+#    MDBottomNavigation:
+#        size_hint_y:0.15
+#        panel_color: 'red'
+#
+#        MDBottomNavigationItem:
+#            name: 'home'
+#            text: 'Home'
+#            icon:'images/icon-home.png'
+#            icon:'home'
+#            size_hint_x:0.38
+#            on_tab_touch_down:root.net2home()
+#
+#        MDBottomNavigationItem:
+#            name: 'stats'
+#            text: 'Saved'
+#            icon: 'images/icon-star-on.png'
+#            size_hint_x:0.38
+#            on_tab_touch_down:root.net2stats()
+#
+#        MDBottomNavigationItem:
+#            name: 'network'
+#            text: 'Network'
+#            icon: 'images/icon-network.png'
+#            size_hint_x:0.38
+
+
+
+
+
+#        Rectangle:
+#            size: self.size
+#            pos: self.pos
+
+#<NetworkScreen>:
+#    MDBoxLayout:
+#        orientation: 'vertical'
+#        #-----UPPER BAR-----
+#        MDBoxLayout:
+#            orientation: 'horizontal'
+#            size_hint_y: 0.10
+##            md_bg_color: 'red'
+#            Image:
+#                source: 'src/images/logo_b.png'
+##                opacity: 0.7
+#                size_hint: None, None  # This will disable the automatic sizing
+#                size: dp(220), dp(220)  # Set the size of the image
+#                allow_stretch: True  # Allow the image to be stretched
+#                pos_hint: {"center_y":0.5}
+#                size_hint_y: 0.7
+#
+#
+#        #-----CONTENT-----
+#        MDBoxLayout:
+#            orientation: 'vertical'
+#            size_hint: 0.9, 0.8
+#            pos_hint: {'center_x':0.5,'center_y':0.5}
+#            spacing: 40
+#            padding: [0, 30, 20, 0] # Left, Top, Right, Bottom padding in dp or pixels
+#
+##            md_bg_color: 'purple'
+#            #---CREATE POST BUTTON ---
+#            MDFlatButton:
+#                text: 'Create post'
+#                md_bg_color: 'F030C3'
+#                size_hint_x: 1.0
+#                size_hint_y: 0.05
+##                text_color: 1, 1, 1, 1
+#                font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
+#                on_release:root.create_post()
+#
+#            #-----SCROLL VIEW POSTS DRAFT ----
+#            MDBoxLayout:
+#                size_hint: 1.0, 0.8
+#                md_bg_color: 'red'
+#                spacing: 10
+#                orientation: 'vertical'
+#                pos_hint: {'center_x':0.5,'center_y':0.5}
+
+
+
+
+
+
+#                ScrollView:
+#                    id: scroll_view
+#                    MDList:
+#                        id: scroll_view_list
+#                        adaptive_height: True
+#                        OneLineListItem:
+#                            text: 'sample 1'
+#                        OneLineListItem:
+#                            text: 'sample 2'
+#                        OneLineListItem:
+#                            text: 'sample 3'
+#                        OneLineListItem:
+#                            text: 'sample 4'
+#                        OneLineListItem:
+#                            text: 'sample 5'
+#                        OneLineListItem:
+#                            text: 'sample 6'
+#                        OneLineListItem:
+#                            text: 'sample 1'
+#                        OneLineListItem:
+#                            text: 'sample 2'
+#                        OneLineListItem:
+#                            text: 'sample 3'
+#                        OneLineListItem:
+#                            text: 'sample 4'
+#                        OneLineListItem:
+#                            text: 'sample 5'
+#                        OneLineListItem:
+#                            text: 'sample 6'
+#                        MDCard:
+#                            size_hint: None, None
+#                            size: "280dp", "120dp"
+#                            pos_hint: {"center_x": 0.5}
+#                            # Card content goes here
+#                            MDLabel:
+#                                text: "Card 1"
+#                                halign: "center"
+#
+#                        MDCard:
+#                            size_hint: None, None
+#                            size: "280dp", "120dp"
+#                            pos_hint: {"center_x": 0.5}
+#                            # Card content goes here
+#                            MDLabel:
+#                                text: "Card 2"
+#                                halign: "center"
+#                        MDCard:
+#                            size_hint: None, None
+#                            size: "280dp", "120dp"
+#                            pos_hint: {"center_x": 0.5}
+#                            # Card content goes here
+#                            MDLabel:
+#                                text: "Card 3"
+#                                halign: "center"
+#                        MDCard:
+#                            size_hint: None, None
+#                            size: "280dp", "120dp"
+#                            pos_hint: {"center_x": 0.5}
+#                            # Card content goes here
+#                            MDLabel:
+#                                text: "Card 4"
+#                                halign: "center"
+#                        MDCard:
+#                            size_hint: None, None
+#                            size: "280dp", "120dp"
+#                            pos_hint: {"center_x": 0.5}
+#                            # Card content goes here
+#                            MDLabel:
+#                                text: "Card 5"
+#                                halign: "center"
+#
+#                        MDCard:
+#                            size_hint: None, None
+#                            size: "280dp", "120dp"
+#                            pos_hint: {"center_x": 0.5}
+#                            # Card content goes here
+#                            MDLabel:
+#                                text: "Card 6"
+#                                halign: "center"
+#
+#                        MDCard:
+#                            size_hint: None, None
+#                            size: "280dp", "120dp"
+#                            pos_hint: {"center_x": 0.5}
+#                            # Card content goes here
+#                            MDLabel:
+#                                text: "Card 7"
+#                                halign: "center"
+#
+
+
+
+            #-----SCROLL VIEW POSTS-----
+#            MDBoxLayout:
+#                size_hint: 1.0, 0.8
+##                md_bg_color: 'red'
+#                spacing: 40
+#                orientation: 'vertical'
+#                pos_hint: {'center_x':0.5,'center_y':0.5}
+#                #DUMMY POSTS
+#
+#                MDCard:
+#                    size: 0.8, 0.15
+#                    radius: 0
+#                    canvas.before:
+#                        Color:
+#                            rgba: 0, 0, 0, 1  # Color of the border (black)
+#                        Line:
+#                            width: 2  # Width of the border line
+#                            rectangle: (self.x + 1, self.y + 1, self.width - 2, self.height - 2)
+#
+#                    #LEFT HAND SIDE; BUTTONS
+#                    MDBoxLayout:
+#                        orientation: 'horizontal'
+#                        MDBoxLayout:
+#                            size_hint: 0.15,1
+#                            orientation: 'vertical'
+#                            md_bg_color: '#9A50FF'
+#                            MDIconButton:
+#                                icon: "images/arrow-up.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.upvote_post()
+#                            MDIconButton:
+#                                icon: "images/arrow-down.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.downvote_post()
+#                        MDBoxLayout:
+#                            size_hint: 0.8,1
+##                            md_bg_color: 'red'
+#                            orientation: 'vertical'
+#                            MDBoxLayout:
+#                                orientation: 'horizontal'
+#                                center_x: 0.2
+#                                padding: [40, 0, 0, 0] # Left, Top, Right, Bottom
+#                                MDLabel:
+#                                    text: 'username'
+#                                    font_name:'Helvetica'
+#                                    font_size:'25px'
+#                                MDLabel:
+#                                    text: 'Sep 12 2023'
+#                                    font_name:'Helvetica'
+#                                    font_size:'18px'
+#                                    text_color: '#484848'
+#                            MDLabel:
+#                                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales. Lorem ipsum dolor sit amet. "
+#                                font_name:'Helvetica'
+#                                font_size:'22px'
+#                                halign: 'center'
+#
+#                MDCard:
+#                    size: 0.8, 0.15
+#                    radius: 0
+#                    canvas.before:
+#                        Color:
+#                            rgba: 0, 0, 0, 1  # Color of the border (black)
+#                        Line:
+#                            width: 2  # Width of the border line
+#                            rectangle: (self.x + 1, self.y + 1, self.width - 2, self.height - 2)
+#
+#                    #LEFT HAND SIDE; BUTTONS
+#                    MDBoxLayout:
+#                        orientation: 'horizontal'
+#                        MDBoxLayout:
+#                            size_hint: 0.15,1
+#                            orientation: 'vertical'
+#                            md_bg_color: '#9A50FF'
+#                            MDIconButton:
+#                                icon: "images/arrow-up.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.upvote_post()
+#                            MDIconButton:
+#                                icon: "images/arrow-down.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.downvote_post()
+#                        MDBoxLayout:
+#                            size_hint: 0.8,1
+##                            md_bg_color: 'red'
+#                            orientation: 'vertical'
+#                            MDBoxLayout:
+#                                orientation: 'horizontal'
+#                                center_x: 0.2
+#                                padding: [40, 0, 0, 0] # Left, Top, Right, Bottom
+#                                MDLabel:
+#                                    text: 'username'
+#                                    font_name:'Helvetica'
+#                                    font_size:'25px'
+#                                MDLabel:
+#                                    text: 'Sep 12 2023'
+#                                    font_name:'Helvetica'
+#                                    font_size:'18px'
+#                                    text_color: '#484848'
+#                            MDLabel:
+#                                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales. Lorem ipsum dolor sit amet. "
+#                                font_name:'Helvetica'
+#                                font_size:'22px'
+#                                halign: 'center'
+#
+#                MDCard:
+#                    size: 0.8, 0.15
+#                    radius: 0
+#                    canvas.before:
+#                        Color:
+#                            rgba: 0, 0, 0, 1  # Color of the border (black)
+#                        Line:
+#                            width: 2  # Width of the border line
+#                            rectangle: (self.x + 1, self.y + 1, self.width - 2, self.height - 2)
+#
+#                    #LEFT HAND SIDE; BUTTONS
+#                    MDBoxLayout:
+#                        orientation: 'horizontal'
+#                        MDBoxLayout:
+#                            size_hint: 0.15,1
+#                            orientation: 'vertical'
+#                            md_bg_color: '#9A50FF'
+#                            MDIconButton:
+#                                icon: "images/arrow-up.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.upvote_post()
+#                            MDIconButton:
+#                                icon: "images/arrow-down.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.downvote_post()
+#                        MDBoxLayout:
+#                            size_hint: 0.8,1
+##                            md_bg_color: 'red'
+#                            orientation: 'vertical'
+#                            MDBoxLayout:
+#                                orientation: 'horizontal'
+#                                center_x: 0.2
+#                                padding: [40, 0, 0, 0] # Left, Top, Right, Bottom
+#                                MDLabel:
+#                                    text: 'username'
+#                                    font_name:'Helvetica'
+#                                    font_size:'25px'
+#                                MDLabel:
+#                                    text: 'Sep 12 2023'
+#                                    font_name:'Helvetica'
+#                                    font_size:'18px'
+#                                    text_color: '#484848'
+#                            MDLabel:
+#                                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales. Lorem ipsum dolor sit amet. "
+#                                font_name:'Helvetica'
+#                                font_size:'22px'
+#                                halign: 'center'
+#                MDCard:
+#                    size: 0.8, 0.15
+#                    radius: 0
+#                    canvas.before:
+#                        Color:
+#                            rgba: 0, 0, 0, 1  # Color of the border (black)
+#                        Line:
+#                            width: 2  # Width of the border line
+#                            rectangle: (self.x + 1, self.y + 1, self.width - 2, self.height - 2)
+#
+#                    #LEFT HAND SIDE; BUTTONS
+#                    MDBoxLayout:
+#                        orientation: 'horizontal'
+#                        MDBoxLayout:
+#                            size_hint: 0.15,1
+#                            orientation: 'vertical'
+#                            md_bg_color: '#9A50FF'
+#                            MDIconButton:
+#                                icon: "images/arrow-up.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.upvote_post()
+#                            MDIconButton:
+#                                icon: "images/arrow-down.png"
+#                                pos_hint: {'center_x':0.5, 'center_y':0.5}
+#                                on_release:root.downvote_post()
+#                        MDBoxLayout:
+#                            size_hint: 0.8,1
+##                            md_bg_color: 'red'
+#                            orientation: 'vertical'
+#                            MDBoxLayout:
+#                                orientation: 'horizontal'
+#                                center_x: 0.2
+#                                padding: [40, 0, 0, 0] # Left, Top, Right, Bottom
+#                                MDLabel:
+#                                    text: 'username'
+#                                    font_name:'Helvetica'
+#                                    font_size:'25px'
+#                                MDLabel:
+#                                    text: 'Sep 12 2023'
+#                                    font_name:'Helvetica'
+#                                    font_size:'18px'
+#                                    text_color: '#484848'
+#                            MDLabel:
+#                                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales. Lorem ipsum dolor sit amet. "
+#                                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales. Lorem ipsum dolor sit amet. "
+#                                font_name:'Helvetica'
+#                                font_size:'22px'
+#                                halign: 'center'
+#
+#
+#
         #-----NAVIGATION BAR-----
         #NETWORK ICON --> ACTIVATE
 
-        MDBottomNavigation:
-            size_hint_y:0.15
-            panel_color: 'red'
-
-            MDBottomNavigationItem:
-                name: 'home'
-                text: 'Home'
-                icon:'images/icon-home.png'
-                icon:'home'
-                size_hint_x:0.38
-
-            MDBottomNavigationItem:
-                name: 'stats'
-                text: 'Saved'
-                icon: 'images/icon-star-on.png'
-                size_hint_x:0.38
-                on_tab_touch_down:root.home2stats()
-
-            MDBottomNavigationItem:
-                name: 'network'
-                text: 'Network'
-                icon: 'images/icon-network.png'
-                size_hint_x:0.38
+#        MDBottomNavigation:
+#            size_hint_y:0.15
+#            panel_color: 'red'
+#
+#            MDBottomNavigationItem:
+#                name: 'home'
+#                text: 'Home'
+#                icon:'images/icon-home.png'
+#                icon:'home'
+#                size_hint_x:0.38
+#
+#            MDBottomNavigationItem:
+#                name: 'stats'
+#                text: 'Saved'
+#                icon: 'images/icon-star-on.png'
+#                size_hint_x:0.38
+#                on_tab_touch_down:root.home2stats()
+#
+#            MDBottomNavigationItem:
+#                name: 'network'
+#                text: 'Network'
+#                icon: 'images/icon-network.png'
+#                size_hint_x:0.38
 
 
 
