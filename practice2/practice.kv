@@ -1,66 +1,7 @@
-#<ScrollView>:
-#    do_scroll_x: False
-#
-#    GridLayout:
-#        id: container
-#        cols: 1
-#        size_hint_y: None
-#        height: self.minimum_height
-#        spacing: "10dp"
-#        padding: "10dp"
+#:kivy 2.0.0
 
-
-
-<Card>:
-    canvas.before:
-        Color:
-            rgba: 1, 1, 1, 1  # White color
-        Rectangle:
-            size: self.size
-            pos: self.pos
-#
-#
-#<Card>
-#    MDBoxLayout:
-#        orientation: 'vertical'
-#        #-----UPPER BAR-----
-#        MDBoxLayout:
-#            orientation: 'horizontal'
-#            size_hint_y: 0.10
-##            md_bg_color: 'red'
-#            Image:
-#                source: 'src/images/logo_b.png'
-##                opacity: 0.7
-#                size_hint: None, None  # This will disable the automatic sizing
-#                size: dp(220), dp(220)  # Set the size of the image
-#                allow_stretch: True  # Allow the image to be stretched
-#                pos_hint: {"center_y":0.5}
-#                size_hint_y: 0.7
-#
-#
-#        #-----CONTENT-----
-#        MDBoxLayout:
-#            orientation: 'vertical'
-#            size_hint: 0.9, 0.8
-#            pos_hint: {'center_x':0.5,'center_y':0.5}
-#            spacing: 40
-#            padding: [0, 30, 20, 0] # Left, Top, Right, Bottom padding in dp or pixels
-#
-##            md_bg_color: 'purple'
-#            #---CREATE POST BUTTON ---
-#            MDFlatButton:
-#                text: 'Create post'
-#                md_bg_color: 'F030C3'
-#                size_hint_x: 1.0
-#                size_hint_y: 0.05
-##                text_color: 1, 1, 1, 1
-#                font_name: 'fonts/HelveticaNeue-Bold-02.ttf'
-#                on_release:root.create_post()
-#
-#            #-----SCROLL VIEW POSTS DRAFT ----
-#            MDBoxLayout:
-#                size_hint: 1.0, 0.8
-#                md_bg_color: 'red'
-#                spacing: 10
-#                orientation: 'vertical'
-#                pos_hint: {'center_x':0.5,'center_y':0.5}
+<MDScreen>:
+    MDLabel:
+        text: "Enter a Message"
+        halign: "center"
+        pos_hint: {"center_y": 0.7}
