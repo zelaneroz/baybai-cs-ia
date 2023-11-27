@@ -39,7 +39,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.list import MDList
 
-path = 'src/baybai.db'
+path = 'baybai.db'
 currrent_user = ""
 class database_handler:
     def __init__(self,namedb:str):
@@ -481,7 +481,6 @@ class NetworkScreen(MDScreen):
 from kivy.uix.image import Image
 from kivy.metrics import dp
 
-
 class CardList(BoxLayout):
     def __init__(self, **kwargs):
         super(CardList, self).__init__(**kwargs)
@@ -489,44 +488,107 @@ class CardList(BoxLayout):
         self.size_hint_y = None
         self.bind(minimum_height=self.setter('height'))
 
+        # Example posts data
+        posts = {
+            1: ['zelan811', 'My First Post', 'This is the content of the first post.', 'Sep 12, 2023'],
+            2: ['zelan811', 'My SECOND Post', 'This is the content of the 2nd post.', 'Sep 12, 2023']
+            # ... more posts
+        }
 
-        md_list = MDList()  # Create an MDList
+        md_list = MDList()
+        md_list.spacing = 0
 
         # Add cards to the layout
-        for i in range(10):  # Example: Creating 10 cards
-            # container = BoxLayout(padding="10dp", size_hint_y=None, height="200dp")
-            container = BoxLayout(size_hint_y=None, height="200dp")
+        for post_id, post_data in posts.items():
+            username, title, content, timestamp = post_data
+
+            container = BoxLayout(size_hint_y=None, height="150dp")
             card = MDCard(size_hint_y=None, size_hint_x=0.5, height=200)
 
             card.canvas.before.add(Color(rgba=(0, 0, 0, 1)))
             card.canvas.before.add(Line(width=5, rectangle=(card.x + 1, card.y + 1, card.width - 2, card.height - 2)))
-            left_box = MDBoxLayout(size_hint=(0.15, 1), md_bg_color=(0.6, 0.31, 1, 1), orientation='vertical')
 
-            # Upvote button
-            upvote_button = MDIconButton(icon="images/arrow-up.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
-            upvote_button.bind(on_release=self.upvote_post)
-            left_box.add_widget(upvote_button)
-
-            # Downvote button
-            downvote_button = MDIconButton(icon="images/arrow-down.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
-            downvote_button.bind(on_release=self.downvote_post)
-            left_box.add_widget(downvote_button)
-
+            # Left box with upvote/downvote
+            left_box = self.create_vote_box()
             card.add_widget(left_box)
 
-            right_box = MDBoxLayout(size_hint=(0.85, 1), orientation='vertical')
-            user_box = MDBoxLayout(orientation='horizontal', padding=[40, 0, 0, 0])
-            user_box.add_widget(MDLabel(text='username', font_name='Helvetica', font_size='25px'))
-            user_box.add_widget(MDLabel(text='Sep 12 2023',font_name='Helvetica', font_size='18', theme_text_color='Custom', text_color=(0.28, 0.28, 0.28, 1)))
-            right_box.add_widget(user_box)
-            right_box.add_widget(MDLabel(text='Lorem ipsum dolor sit amet, consectetur adipiscing elit...', font_name='Helvetica', font_size='22sp', halign='center'))
-
+            # Right box with post info
+            right_box = self.create_post_box(username, timestamp, title, content)
             card.add_widget(right_box)
 
             container.add_widget(card)
             md_list.add_widget(container)
 
         self.add_widget(md_list)
+
+    def create_vote_box(self):
+        left_box = MDBoxLayout(size_hint=(0.15, 1), md_bg_color=(0.6, 0.31, 1, 1), orientation='vertical')
+        upvote_button = MDIconButton(icon="images/arrow-up.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        upvote_button.bind(on_release=self.upvote_post)
+        downvote_button = MDIconButton(icon="images/arrow-down.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        downvote_button.bind(on_release=self.downvote_post)
+        left_box.add_widget(upvote_button)
+        left_box.add_widget(downvote_button)
+        return left_box
+
+    def create_post_box(self, username, timestamp, title, content):
+        right_box = MDBoxLayout(size_hint=(0.85, 1), orientation='vertical')
+        user_box = MDBoxLayout(orientation='horizontal', padding=[40, 0, 0, 0])
+        user_box.add_widget(MDLabel(text=username, font_name='Helvetica', font_size='25px'))
+        user_box.add_widget(MDLabel(text=timestamp, font_name='Helvetica', font_size='18', theme_text_color='Custom', text_color=(0.28, 0.28, 0.28, 1)))
+        right_box.add_widget(user_box)
+        right_box.add_widget(MDLabel(text=f"{title}\n{content}", font_name='Helvetica', font_size='22sp', halign='center'))
+        return right_box
+
+# class CardList(BoxLayout):
+#     def __init__(self, **kwargs):
+#         super(CardList, self).__init__(**kwargs)
+#         self.orientation = 'vertical'
+#         self.size_hint_y = None
+#         self.bind(minimum_height=self.setter('height'))
+#
+#         #key (post_id): [username, title, post_content,timestamp]
+#         posts = {1:['zelan811','title','postxyz','timestamp']}
+#
+#
+#         md_list = MDList()  # Create an MDList
+#         md_list.spacing=0
+#
+#         # Add cards to the layout
+#         for i in range(10):  # Example: Creating 10 cards
+#             # container = BoxLayout(padding="10dp", size_hint_y=None, height="200dp")
+#             container = BoxLayout(size_hint_y=None, height="150dp")
+#             card = MDCard(size_hint_y=None, size_hint_x=0.5, height=200)
+#
+#             card.canvas.before.add(Color(rgba=(0, 0, 0, 1)))
+#             card.canvas.before.add(Line(width=5, rectangle=(card.x + 1, card.y + 1, card.width - 2, card.height - 2)))
+#             left_box = MDBoxLayout(size_hint=(0.15, 1), md_bg_color=(0.6, 0.31, 1, 1), orientation='vertical')
+#
+#             # Upvote button
+#             upvote_button = MDIconButton(icon="images/arrow-up.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
+#             upvote_button.bind(on_release=self.upvote_post)
+#             left_box.add_widget(upvote_button)
+#
+#             # Downvote button
+#             downvote_button = MDIconButton(icon="images/arrow-down.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
+#             downvote_button.bind(on_release=self.downvote_post)
+#             left_box.add_widget(downvote_button)
+#
+#             card.add_widget(left_box)
+#
+#             right_box = MDBoxLayout(size_hint=(0.85, 1), orientation='vertical')
+#             user_box = MDBoxLayout(orientation='horizontal', padding=[40, 0, 0, 0])
+#             user_box.add_widget(MDLabel(text='username', font_name='Helvetica', font_size='25px'))
+#             user_box.add_widget(MDLabel(text='Sep 12 2023',font_name='Helvetica', font_size='18', theme_text_color='Custom', text_color=(0.28, 0.28, 0.28, 1)))
+#             right_box.add_widget(user_box)
+#             right_box.add_widget(MDLabel(text='Lorem ipsum dolor sit amet, consectetur adipiscing elit...', font_name='Helvetica', font_size='22sp', halign='center'))
+#
+#             card.add_widget(right_box)
+#
+#             container.add_widget(card)
+#             md_list.add_widget(container)
+#
+#         self.add_widget(md_list)
 
     def downvote_post(self,instance):
         print("Downvote triggered")
