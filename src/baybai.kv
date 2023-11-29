@@ -1,14 +1,14 @@
 ScreenManager:
-    NetworkScreen:
-        name: "NetworkScreen"
-    CreatePostScreen:
-        name: "CreatePostScreen"
-    LoginScreen:
-        name:"LoginScreen"
     IntroScreen:
         name:"IntroScreen"
     SignUpScreen:
         name:"SignUpScreen"
+    LoginScreen:
+        name:"LoginScreen"
+    CreatePostScreen:
+        name: "CreatePostScreen"
+    NetworkScreen:
+        name: "NetworkScreen"
     HomeScreen:
         name: "HomeScreen"
     Flashcards:
@@ -74,8 +74,9 @@ ScreenManager:
                     MDBoxLayout:
                         orientation: 'horizontal'
                         md_bg_color: '#F030C3'
-                        MDLabel:
-                            text:"arrow"
+                        MDIconButton:
+                            icon: 'images/white-arrow-back.png'
+                            on_release: root.backtofeed()
                         MDLabel:
                             text:"Create post"
                     MDBoxLayout:
@@ -85,8 +86,8 @@ ScreenManager:
                             hint_text: "Title"
                             mode: "round"
                             max_text_length: 15
+                            id: post_title
                             font_name: "Helvetica"
-                            id:uname
                             size_hint_y: None
                             height: dp(48)
 
@@ -94,7 +95,7 @@ ScreenManager:
                             hint_text: "Text (optional)"
                             mode: "round"
                             max_text_length: 300
-                            id:password
+                            id:post_content
                             size_hint_y: None
                             font_name: "Helvetica"
                             height: dp(48)
@@ -107,12 +108,14 @@ ScreenManager:
                             text:'Cancel'
                             line_color: 'FF00CE'
                             text_color: "FF00CE"
+                            on_release: root.backtofeed()
                         MDRoundFlatButton:
                             text:'Post'
                             md_bg_color: '#FF00CE'
                             text_color: "white"
                             line_color: 'FF00CE'
                             font_name: 'fonts/HelveticaNeue-01.ttf'
+                            on_press: root.new_post()
 
 
 
@@ -1153,12 +1156,12 @@ ScreenManager:
                     size_hint_y:0.8
                     source:'images/logo.png'
                     pos_hint: {"center_x":0.5, "center_y":0.5}
-            MDCard:
-                md_bg_color: 'pink'
-                size_hint:0.8,0.57 #147
-                pos_hint:{"center_x":0.5,"center_y":0.5}
-                MDLabel:
-                    text: 'Daily Task'
+#            MDCard:
+#                md_bg_color: 'pink'
+#                size_hint:0.8,0.57 #147
+#                pos_hint:{"center_x":0.5,"center_y":0.5}
+#                MDLabel:
+#                    text: 'Daily Task'
 
 
         #red_2 (lower half)
@@ -1231,12 +1234,12 @@ ScreenManager:
                     BoxLayout:
                         orientation:'vertical'
 
-                MDBottomNavigationItem:
-                    name: 'stats'
-                    text: 'Saved'
-                    icon: 'images/icon-star-on.png'
-                    size_hint_x:0.38
-                    on_tab_touch_down:root.home2stats()
+#                MDBottomNavigationItem:
+#                    name: 'stats'
+#                    text: 'Saved'
+#                    icon: 'images/icon-star-on.png'
+#                    size_hint_x:0.38
+#                    on_tab_touch_down:root.home2stats()
 
                 MDBottomNavigationItem:
                     name: 'network'
@@ -1494,7 +1497,9 @@ ScreenManager:
 
                         MDLabel:
 #                            text: 'sa'
-                            text:root.flashcard_contents[0]
+#                            text:root.flashcard_contents[0]
+#                            text: root.flashcard_contents[0] if root.flashcard_contents else "No saved cards as of now"
+                            text: root.flashcard_contents[0] if root.flashcard_contents else " "
                             halign: 'center'
                             id: saved_card_content
                             font_name: 'Noto'

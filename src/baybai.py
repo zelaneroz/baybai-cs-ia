@@ -1,7 +1,11 @@
 from kivy.core.text import LabelBase
 from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
+from kivy.network.urlrequest import UrlRequest
+import json
 from kivy.lang import Builder
+import jwt
+from datetime import datetime
 from kivy.animation import Animation
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.scrollview import MDScrollView
@@ -38,9 +42,11 @@ from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.list import MDList
+from datetime import datetime, timedelta
+
 
 path = 'baybai.db'
-currrent_user = ""
+current_user = ""
 class database_handler:
     def __init__(self,namedb:str):
         self.connection = sqlite3.Connection(namedb)
@@ -74,6 +80,10 @@ class SignUpScreen(MDScreen):
     def popup(self,out: str):
         self.dialog = MDDialog(text=out)
         self.dialog.open()
+
+    def update_current_user(self,user):
+        global current_user
+        current_user = user
 
     def validate_register(self, uname: str, pass1: str, conpass: str):
         global path
@@ -112,7 +122,7 @@ class SignUpScreen(MDScreen):
             db.close()
 
             self.ids.name.text,self.ids.uname.text,self.ids.password.text,self.ids.confirm_password.text="","","",""
-            current_user = uname
+            self.update_current_user(uname)
             self.clear_inputs()
             self.parent.current = "HomeScreen"
 
@@ -121,6 +131,10 @@ class SignUpScreen(MDScreen):
         self.ids.uname.text = ""
         self.ids.password.text = ""
         self.ids.confirm_password.text = ""
+
+    def update_current_user(self,user):
+        global current_user
+        current_user = user
 
 class LoginScreen(MDScreen):
     def popup(self,out: str):
@@ -155,14 +169,20 @@ class LoginScreen(MDScreen):
         uname,passwd = self.ids.uname.text,self.ids.password.text
         db.close()
         global currrent_user
+        print('in login')
 
         if self.validate_login(uname, passwd)[0]:
-            currrent_user = uname
+            self.update_current_user(uname)
             self.popup(self.validate_login(uname, passwd)[1])
             self.parent.current = "HomeScreen"
             Clock.schedule_once(lambda dt: self.move_to_home_screen(), 2)
 
+    def update_current_user(self,user):
+        global current_user
+        current_user = user
+
 class HomeScreen(MDScreen):
+
     def tolearn(self):
         self.manager.current = 'LearnScreen'
     def home2saved(self):
@@ -173,6 +193,8 @@ class HomeScreen(MDScreen):
         self.manager.current = "StatsScreen"
     def home2net(self):
         self.manager.current = "NetworkScreen"
+
+
 
 level = 1
 label_text = ""
@@ -312,17 +334,33 @@ class SavedScreen(MDScreen):
         db = database_handler(namedb=path)
         self.content_indexes = db.search2(f"SELECT * from saved")
         self.flashcard_contents = []
-        contents = []
-        for i,j in self.content_indexes:
-            content = db.search2(f"SELECT fro,bck from contents where lvl={i} and dex={j}")
-            contents.append(content[0])
-        print(contents)
-        self.tagalog,self.baybayin = zip(*contents)
-        self.tagalog, self.baybayin = list(self.tagalog),list(self.baybayin)
-        self.flashcard_contents = self.tagalog
+        self.contents = []
+        self.tagalog, self.baybayin = [],[]
+        if self.content_indexes:
+            for i, j in self.content_indexes:
+                content = db.search2(f"SELECT fro, bck from contents where lvl={i} and dex={j}")
+                if self.contents:
+                    self.content.append(content[0])
+
+        if self.contents:
+            self.tagalog, self.baybayin = zip(*self.contents)
+            self.tagalog, self.baybayin = list(self.tagalog), list(self.baybayin)
+            self.flashcard_contents = self.tagalog
+        else:
+            print("No saved cards as of now")
+            self.flashcard_contents = []
+
         self.current_card_index = 0
         self.is_tagalog = True
         self.dialog = None
+
+    def on_enter(self, *args):
+        if not self.contents:
+            print("No saved cards as of now")
+            self.show_no_saved_cards_popup()
+            self.flashcard_contents = []
+
+
     def backtohome(self):
         baybai.backtohome(self)
 
@@ -352,6 +390,14 @@ class SavedScreen(MDScreen):
             self.ids.saved_card_content.text = self.flashcard_contents[self.current_card_index]
         else:
             self.ids.saved_card_content.text = ""
+    #
+    # def popup(self,out: str):
+    #     self.dialog = MDDialog(text=out)
+    #     self.dialog.open()
+
+    def show_no_saved_cards_popup(self):
+        self.dialog = MDDialog(text="No saved cards as of now")
+        self.dialog.open()
 
     def remove_flashcard(self, *args):
         self.dialog.dismiss()
@@ -416,6 +462,7 @@ class StatsScreen(MDScreen):
 class NetworkScreen(MDScreen):
     def __init__(self, **kwargs):
         super(NetworkScreen, self).__init__(**kwargs)
+        self.card_list = CardList(network_screen=self)
 
         # FONTS
         LabelBase.register(name='Helvetica', fn_regular='fonts/HelveticaNeue-01.ttf',
@@ -442,7 +489,6 @@ class NetworkScreen(MDScreen):
 
 
 
-
         #CONTENT
         content_layout = BoxLayout(orientation='vertical', size_hint=(0.9, 0.8),
                                    pos_hint={'center_x': 0.5, 'center_y': 0.5}, spacing=40, padding=[0, 30, 20, 0])
@@ -453,11 +499,12 @@ class NetworkScreen(MDScreen):
 
 
 
-        super(NetworkScreen, self).__init__(**kwargs)
+        # super(NetworkScreen, self).__init__(**kwargs)
         # Register fonts here if needed, or better, do it in the build method of your app
         scroll_view = ScrollView(size_hint=(0.8, None), size=(Window.width, Window.height),
                                  pos_hint={"center_x": 0.5, "center_y": 0.5})
-        scroll_view.add_widget(CardList())
+        # scroll_view.add_widget(CardList(network_screen=self))
+        scroll_view.add_widget(self.card_list)
         posts_scrolls = BoxLayout(size_hint=(1.0, 0.8),spacing=10,orientation='vertical',pos_hint={'center_x':0.5,'center_y':0.5})
 
 
@@ -471,6 +518,40 @@ class NetworkScreen(MDScreen):
 
         self.add_widget(main_layout)
 
+    def on_enter(self, *args):
+        global current_user
+        self.token = self.generate_token(current_user)
+        # Fetch posts data
+        self.fetch_posts_data()
+
+    def fetch_posts_data(self):
+        encoded_data = json.dumps({'token': self.token})
+        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+        UrlRequest('http://127.0.0.1:5000/protected', method='POST', on_success=self.on_posts_fetched,
+                   req_body=encoded_data, req_headers=headers)
+
+    def on_posts_fetched(self, request, result):
+        if result['success']:
+            posts_data = {i + 1: post for i, post in enumerate(result['data'])}
+            self.card_list.update_posts(posts_data)
+
+    # def on_enter(self, *args):
+    #     global current_user
+    #     self.token = self.generate_token(current_user)
+    #     print("Generated Token:", self.token)
+    #
+    #     encoded_data = json.dumps(
+    #         {'token': self.token})
+    #     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+    #     UrlRequest('http://127.0.0.1:5000/protected', method='POST', on_success=self.on_posts_fetched,
+    #                req_body=encoded_data, req_headers=headers)
+
+    # def on_posts_fetched(self, request, result):
+    #     #SAMPLE RESULT OUTPUT:
+    #     #{'data': [['sometitle', 'somecontent', 'Nov-28-2023', 'user811']], 'success': True}
+    #     if result['success']:
+    #         posts_data = {i + 1: post for i, post in enumerate(result['data'])}
+    #         self.card_list.update_posts(posts_data)
 
     def create_post(self,instance):
         self.manager.current = "CreatePostScreen"
@@ -478,28 +559,137 @@ class NetworkScreen(MDScreen):
     def backtohome(self,instance):
         self.manager.current = "HomeScreen"
 
+    def generate_token(self,username):
+        secret_key = "your_secret_key"  # Replace with your actual secret key
+        expiration = datetime.utcnow() + timedelta(hours=1)
+        # expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # 1-hour validity
+        token = jwt.encode({'username': username, 'exp': expiration}, secret_key, algorithm='HS256')
+        return token
+
+# class NetworkScreen(MDScreen):
+#     def __init__(self, **kwargs):
+#         super(NetworkScreen, self).__init__(**kwargs)
+#         self.card_list = CardList(network_screen=self)
+#
+#         # FONTS
+#         LabelBase.register(name='Helvetica', fn_regular='fonts/HelveticaNeue-01.ttf',
+#                            fn_bold='fonts/HelveticaNeue-Bold-02.ttf',
+#                            fn_bolditalic='fonts/HelveticaNeue-BoldItalic-04.ttf',
+#                            fn_italic='fonts/HelveticaNeue-Italic-03.ttf')
+#
+#         # Main layout
+#         main_layout = BoxLayout(orientation='vertical',spacing=50)
+#
+#         # Upper bar
+#         upper_bar = BoxLayout(orientation='horizontal', size_hint_y=0.10)
+#
+#         back_arrow = MDIconButton(icon='images/arrow_back.png',pos_hint={'center_x': 0.2, 'center_y': 0.5})
+#         back_arrow.bind(on_release=self.backtohome)
+#
+#         logo_image = Image(source='images/logo_b.png', size_hint=(None, None), size=(dp(220), dp(220)),
+#                            allow_stretch=True, pos_hint={"center_y": 0.5}, size_hint_y=0.7, opacity=0.7)
+#         title = MDLabel(text='BaiNet', font_name='Helvetica', bold=True, font_size=dp(90))
+#
+#         upper_bar.add_widget(back_arrow)
+#         upper_bar.add_widget(logo_image)
+#         upper_bar.add_widget(title)
+#
+#
+#
+#         #CONTENT
+#         content_layout = BoxLayout(orientation='vertical', size_hint=(0.9, 0.8),
+#                                    pos_hint={'center_x': 0.5, 'center_y': 0.5}, spacing=40, padding=[0, 30, 20, 0])
+#         create_post_button = MDFlatButton(text='Create post', md_bg_color=(1, 0.19, 0.76, 1),
+#                                           size_hint_x=1.0, size_hint_y=0.05,
+#                                           font_name='Helvetica')
+#         create_post_button.bind(on_release=self.create_post)
+#
+#
+#
+#         # super(NetworkScreen, self).__init__(**kwargs)
+#         # Register fonts here if needed, or better, do it in the build method of your app
+#         scroll_view = ScrollView(size_hint=(0.8, None), size=(Window.width, Window.height),
+#                                  pos_hint={"center_x": 0.5, "center_y": 0.5})
+#         # scroll_view.add_widget(CardList(network_screen=self))
+#         scroll_view.add_widget(self.card_list)
+#         posts_scrolls = BoxLayout(size_hint=(1.0, 0.8),spacing=10,orientation='vertical',pos_hint={'center_x':0.5,'center_y':0.5})
+#
+#
+#         content_layout.add_widget(create_post_button)
+#         # content_layout.add_widget(scroll_view)
+#         posts_scrolls.add_widget(scroll_view)
+#         content_layout.add_widget(posts_scrolls)
+#
+#         main_layout.add_widget(upper_bar)
+#         main_layout.add_widget(content_layout)
+#
+#         self.add_widget(main_layout)
+#
+#     def on_enter(self, *args):
+#         global current_user
+#         self.token = self.generate_token(current_user)
+#         print("Generated Token:", self.token)
+#
+#         encoded_data = json.dumps(
+#             {'token': self.token})
+#         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+#         UrlRequest('http://127.0.0.1:5000/protected', method='POST', on_success=self.on_posts_fetched,
+#                    req_body=encoded_data, req_headers=headers)
+#
+#     def on_posts_fetched(self, request, result):
+#         #SAMPLE RESULT OUTPUT:
+#         #{'data': [['sometitle', 'somecontent', 'Nov-28-2023', 'user811']], 'success': True}
+#         if result['success']:
+#             posts_data = {i + 1: post for i, post in enumerate(result['data'])}
+#             self.card_list.update_posts(posts_data)
+#
+#     def create_post(self,instance):
+#         self.manager.current = "CreatePostScreen"
+#
+#     def backtohome(self,instance):
+#         self.manager.current = "HomeScreen"
+#
+#     def generate_token(self,username):
+#         secret_key = "your_secret_key"  # Replace with your actual secret key
+#         expiration = datetime.utcnow() + timedelta(hours=1)
+#         # expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # 1-hour validity
+#         token = jwt.encode({'username': username, 'exp': expiration}, secret_key, algorithm='HS256')
+#         return token
+
+
 from kivy.uix.image import Image
 from kivy.metrics import dp
 
 class CardList(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, network_screen,**kwargs):
         super(CardList, self).__init__(**kwargs)
         self.orientation = 'vertical'
+        self.posts_lists = {}
         self.size_hint_y = None
         self.bind(minimum_height=self.setter('height'))
+        self.height = 500  # Set a fixed height for testing purposes
+        self.md_bg_color = (1, 0, 0, 1)
+        self.build_card_list()
 
-        # Example posts data
-        posts = {
-            1: ['zelan811', 'My First Post', 'This is the content of the first post.', 'Sep 12, 2023'],
-            2: ['zelan811', 'My SECOND Post', 'This is the content of the 2nd post.', 'Sep 12, 2023']
-            # ... more posts
-        }
+    def update_posts(self, new_posts_data):
+        print("Updating posts:", new_posts_data)
+        self.posts_lists = new_posts_data
+        self.refresh_card_list()
 
+
+    def refresh_card_list(self):
+        # Clear existing widgets in md_list and rebuild the card list
+        self.clear_widgets()
+        self.build_card_list()
+        print('refresh card list triggered')
+
+    def build_card_list(self):
         md_list = MDList()
         md_list.spacing = 0
+        print("Building card list with posts")
 
         # Add cards to the layout
-        for post_id, post_data in posts.items():
+        for post_id, post_data in self.posts_lists.items():
             username, title, content, timestamp = post_data
 
             container = BoxLayout(size_hint_y=None, height="150dp")
@@ -521,6 +711,16 @@ class CardList(BoxLayout):
 
         self.add_widget(md_list)
 
+
+    def on_upload_success(self, result):
+        # SAMPLE RESULT OUTPUT:
+        # {'data': [['sometitle', 'somecontent', 'Nov-28-2023', 'user811']], 'success': True}
+        print('result data: ', result['data'])
+        if result['success']:
+            self.posts_lists = {i + 1: post for i, post in enumerate(result['data'])}
+        self.refresh_card_list()
+
+
     def create_vote_box(self):
         left_box = MDBoxLayout(size_hint=(0.15, 1), md_bg_color=(0.6, 0.31, 1, 1), orientation='vertical')
         upvote_button = MDIconButton(icon="images/arrow-up.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
@@ -540,56 +740,6 @@ class CardList(BoxLayout):
         right_box.add_widget(MDLabel(text=f"{title}\n{content}", font_name='Helvetica', font_size='22sp', halign='center'))
         return right_box
 
-# class CardList(BoxLayout):
-#     def __init__(self, **kwargs):
-#         super(CardList, self).__init__(**kwargs)
-#         self.orientation = 'vertical'
-#         self.size_hint_y = None
-#         self.bind(minimum_height=self.setter('height'))
-#
-#         #key (post_id): [username, title, post_content,timestamp]
-#         posts = {1:['zelan811','title','postxyz','timestamp']}
-#
-#
-#         md_list = MDList()  # Create an MDList
-#         md_list.spacing=0
-#
-#         # Add cards to the layout
-#         for i in range(10):  # Example: Creating 10 cards
-#             # container = BoxLayout(padding="10dp", size_hint_y=None, height="200dp")
-#             container = BoxLayout(size_hint_y=None, height="150dp")
-#             card = MDCard(size_hint_y=None, size_hint_x=0.5, height=200)
-#
-#             card.canvas.before.add(Color(rgba=(0, 0, 0, 1)))
-#             card.canvas.before.add(Line(width=5, rectangle=(card.x + 1, card.y + 1, card.width - 2, card.height - 2)))
-#             left_box = MDBoxLayout(size_hint=(0.15, 1), md_bg_color=(0.6, 0.31, 1, 1), orientation='vertical')
-#
-#             # Upvote button
-#             upvote_button = MDIconButton(icon="images/arrow-up.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
-#             upvote_button.bind(on_release=self.upvote_post)
-#             left_box.add_widget(upvote_button)
-#
-#             # Downvote button
-#             downvote_button = MDIconButton(icon="images/arrow-down.png", pos_hint={'center_x': 0.5, 'center_y': 0.5})
-#             downvote_button.bind(on_release=self.downvote_post)
-#             left_box.add_widget(downvote_button)
-#
-#             card.add_widget(left_box)
-#
-#             right_box = MDBoxLayout(size_hint=(0.85, 1), orientation='vertical')
-#             user_box = MDBoxLayout(orientation='horizontal', padding=[40, 0, 0, 0])
-#             user_box.add_widget(MDLabel(text='username', font_name='Helvetica', font_size='25px'))
-#             user_box.add_widget(MDLabel(text='Sep 12 2023',font_name='Helvetica', font_size='18', theme_text_color='Custom', text_color=(0.28, 0.28, 0.28, 1)))
-#             right_box.add_widget(user_box)
-#             right_box.add_widget(MDLabel(text='Lorem ipsum dolor sit amet, consectetur adipiscing elit...', font_name='Helvetica', font_size='22sp', halign='center'))
-#
-#             card.add_widget(right_box)
-#
-#             container.add_widget(card)
-#             md_list.add_widget(container)
-#
-#         self.add_widget(md_list)
-
     def downvote_post(self,instance):
         print("Downvote triggered")
         pass
@@ -607,7 +757,26 @@ class CardList(BoxLayout):
 
 
 class CreatePostScreen(MDScreen):
-    pass
+    def new_post(self):
+        timestamp = datetime.now().strftime("%b-%d-%Y")
+        title,content = self.ids.post_title.text, self.ids.post_content.text
+        # username='dummy'
+        global current_user
+        encoded_data = json.dumps({'title': title, 'content': content,'timestamp':timestamp,'username':current_user})
+        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+        UrlRequest('http://127.0.0.1:5000/upload_post', method='POST', on_success=self.on_upload_success,
+                   req_body=encoded_data, req_headers=headers)
+
+        # {'data': [['sometitle', 'somecontent', 'Nov-28-2023', 'zelan811'], ['posting', 'posting', 'Nov-29-2023', 'zelan811'],
+        # ['posting', 'posting', 'Nov-29-2023', 'zelan811']], 'success': True}
+
+        def on_upload_success(self, request, result):
+            if result['success']:
+                print(result)
+
+
+    def backtofeed(self):
+        self.manager.current = "NetworkScreen"
 
 class stats(MDScreen):
     dialog=None
@@ -624,7 +793,7 @@ class baybai(MDApp):
         learn_screen = LearnScreen(name='LearnScreen')
         scroll_view = ScrollView(size_hint=(0.8, None), size=(Window.width, Window.height),
                                  pos_hint={"center_x": 0.5, "center_y": 0.5})
-        scroll_view.add_widget(CardList())
+        scroll_view.add_widget(CardList(NetworkScreen))
         network_screen = LearnScreen(name='NetworkScreen')
         network_screen.add_widget(scroll_view)
         screen_manager.add_widget(home_screen)  # Add the HomeScreen to the ScreenManager
