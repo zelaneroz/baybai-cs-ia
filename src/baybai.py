@@ -193,6 +193,36 @@ class HomeScreen(MDScreen):
         self.manager.current = "StatsScreen"
     def home2net(self):
         self.manager.current = "NetworkScreen"
+    def logout(self):
+        self.dialog = None
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title='Sign Out',
+                text='Are you sure you want to sign out?',
+                buttons=[
+                    MDFlatButton(
+                        text='CANCEL',
+                        on_release=self.close_dialog
+                    ),
+                    MDFlatButton(
+                        text='YES',
+                        on_release=self.actual_logout
+                    ),
+                ],
+            )
+        self.dialog.open()
+
+    def actual_logout(self,instance=None):
+        self.update_current_user("")
+        self.manager.current = "IntroScreen"
+        self.close_dialog()
+
+    def close_dialog(self, *args):
+        self.dialog.dismiss()
+
+    def update_current_user(self,user):
+        global current_user
+        current_user = user
 
 
 

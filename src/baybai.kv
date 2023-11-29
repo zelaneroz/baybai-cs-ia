@@ -1234,19 +1234,20 @@ ScreenManager:
                     BoxLayout:
                         orientation:'vertical'
 
-#                MDBottomNavigationItem:
-#                    name: 'stats'
-#                    text: 'Saved'
-#                    icon: 'images/icon-star-on.png'
-#                    size_hint_x:0.38
-#                    on_tab_touch_down:root.home2stats()
-
                 MDBottomNavigationItem:
                     name: 'network'
                     text: 'Network'
                     icon: 'images/icon-network.png'
                     size_hint_x:0.38
                     on_tab_touch_down:root.home2net()
+
+                MDBottomNavigationItem:
+                    name: 'log-out'
+                    text: 'Sign out'
+                    icon: 'images/icon-log-out.png'
+                    size_hint_x:0.38
+                    on_tab_touch_down:root.logout()
+
 
 
 <Flashcards>:
