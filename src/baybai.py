@@ -6,6 +6,8 @@ import json
 from kivy.lang import Builder
 import jwt
 from datetime import datetime
+from kivy.uix.image import Image
+from kivy.metrics import dp
 from kivy.animation import Animation
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.scrollview import MDScrollView
@@ -163,14 +165,17 @@ class LoginScreen(MDScreen):
             popup_text = "User does not exist."
         return False, popup_text
 
+    def clear_inputs(self):
+        self.ids.uname.text = ""
+        self.ids.password.text = ""
+
     def try_login(self):
         global path
         db = database_handler(namedb=path)
         uname,passwd = self.ids.uname.text,self.ids.password.text
+        self.clear_inputs()
         db.close()
-        global currrent_user
-        print('in login')
-
+        global current_user
         if self.validate_login(uname, passwd)[0]:
             self.update_current_user(uname)
             self.popup(self.validate_login(uname, passwd)[1])
@@ -180,6 +185,9 @@ class LoginScreen(MDScreen):
     def update_current_user(self,user):
         global current_user
         current_user = user
+        print(f'Current user updated to: {current_user}')
+
+
 
 class HomeScreen(MDScreen):
 
@@ -195,6 +203,7 @@ class HomeScreen(MDScreen):
         self.manager.current = "NetworkScreen"
     def logout(self):
         self.dialog = None
+        print("logout triggered")
         if not self.dialog:
             self.dialog = MDDialog(
                 title='Sign Out',
@@ -288,16 +297,6 @@ class Learn_1_1_Screen(MDScreen):
         self.starred_states = [False] * len(self.tagalog)  # Initialize starred states for each card
         self.update_flashcard_content()
 
-    def backtolearn(self):
-        global path
-        db = database_handler(path)
-        existing_cards = db.search2("SELECT * FROM saved")
-        for lvl, dex in self.saved_cards:
-            if (lvl, dex) not in existing_cards:
-                db.run_query(f"INSERT INTO saved (lvl, dex) VALUES ({lvl}, {dex})")
-        db.close()
-        self.parent.current = 'LearnScreen'
-
     def backtohome(self):
         baybai.backtohome(self)
 
@@ -339,56 +338,72 @@ class Learn_1_1_Screen(MDScreen):
 
         print(f'Index: {self.current_card_index}')
 
+    def backtolearn(self):
+        global path, current_user
+        # print("SAVED CARDS: ", self.saved_cards)
+        #SAVED CARDS:  [(6, 0, 'zelan811'), (6, 1, 'zelan811')]
+        db = database_handler(path)
+        existing_cards = db.search2("SELECT lvl, dex, username FROM saved")
+        #f"SELECT lvl, dex from saved WHERE username='{current_user}'"
+        print("EXISTING CARDS: ", existing_cards)
+        for card_info in self.saved_cards:
+            print("CARD INFO: ", card_info)
+            if card_info not in existing_cards:
+                lvl, dex, username = card_info
+                query = f"INSERT INTO saved (lvl, dex, username) VALUES ({lvl}, {dex}, '{username}')"
+                db.run_query(query)
+        db.close()
+        self.parent.current = 'LearnScreen'
+
     def toggle_star(self):
-        # Toggle the starred state for the current card
-        card_info = [self.level, self.current_card_index]
+        card_info = (self.level, self.current_card_index, current_user)
         self.starred_states[self.current_card_index] = not self.starred_states[self.current_card_index]
 
-        # Update the star icon and database based on the new starred state
         if self.starred_states[self.current_card_index]:
             self.ids.star_button.icon = "star"
             if card_info not in self.saved_cards:
                 self.saved_cards.append(card_info)
-            print(f"Card starred: Index {self.current_card_index}, Level: {self.level}")
-
         else:
             self.ids.star_button.icon = "star-outline"
             if card_info in self.saved_cards:
                 self.saved_cards.remove(card_info)
-            print(f"Card unstarred: Index {self.current_card_index}, Level: {self.level}")
+
+
+        print(f"Card {'starred' if self.starred_states[self.current_card_index] else 'unstarred'}: Index {self.current_card_index}, Level: {self.level}")
+
 
 class SavedScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        global path
+        self.flashcard_contents, self.contents, self.tagalog, self.baybayin = [], [], [], []
+        self.current_card_index = 0
+        self.is_tagalog = True
+        self.dialog,self.dialog_none = None,None
+        self.initialize_flashcards()
+
+    def initialize_flashcards(self):
         db = database_handler(namedb=path)
-        self.content_indexes = db.search2(f"SELECT * from saved")
-        self.flashcard_contents = []
-        self.contents = []
-        self.tagalog, self.baybayin = [],[]
-        if self.content_indexes:
-            for i, j in self.content_indexes:
-                content = db.search2(f"SELECT fro, bck from contents where lvl={i} and dex={j}")
-                if self.contents:
-                    self.content.append(content[0])
+        print(current_user)
+        self.content_indexes = db.search2(f"SELECT lvl, dex from saved WHERE username='{current_user}'")
+        print(f'SELF.CONTENT_INDEXES: {self.content_indexes}')
+        for i, j in self.content_indexes:
+            content = db.search2(f"SELECT fro, bck from contents where lvl={i} AND dex={j}")
+            self.contents.append(content[0])
+        db.close()
+        print(f'SELF.CONTENTS: {self.contents}')
+
 
         if self.contents:
             self.tagalog, self.baybayin = zip(*self.contents)
-            self.tagalog, self.baybayin = list(self.tagalog), list(self.baybayin)
-            self.flashcard_contents = self.tagalog
-        else:
-            print("No saved cards as of now")
-            self.flashcard_contents = []
+            self.flashcard_contents = list(self.tagalog)
 
-        self.current_card_index = 0
-        self.is_tagalog = True
-        self.dialog = None
 
     def on_enter(self, *args):
         if not self.contents:
             print("No saved cards as of now")
             self.show_no_saved_cards_popup()
             self.flashcard_contents = []
+        self.initialize_flashcards()
 
 
     def backtohome(self):
@@ -420,27 +435,86 @@ class SavedScreen(MDScreen):
             self.ids.saved_card_content.text = self.flashcard_contents[self.current_card_index]
         else:
             self.ids.saved_card_content.text = ""
-    #
-    # def popup(self,out: str):
-    #     self.dialog = MDDialog(text=out)
-    #     self.dialog.open()
 
     def show_no_saved_cards_popup(self):
-        self.dialog = MDDialog(text="No saved cards as of now")
-        self.dialog.open()
+        self.dialog_none = MDDialog(text="No saved cards as of now")
+        self.dialog_none.open()
 
     def remove_flashcard(self, *args):
         self.dialog.dismiss()
         global path
-        print(f"Content Indexes: {self.content_indexes}\nFlashcard Contents: {self.flashcard_contents}\nself.tagalog: {self.tagalog},\nself.baybayin: {self.baybayin}")
-        print(f"Current Index: {self.current_card_index}")
-        del self.tagalog[self.current_card_index]
-        del self.baybayin[self.current_card_index]
         db = database_handler(path)
-        lvl,dex = self.content_indexes[self.current_card_index][0], self.content_indexes[self.current_card_index][1]
-        db.run_query(f"DELETE FROM saved where lvl={lvl} and dex={dex}")
+
+        lvl, dex = self.content_indexes[self.current_card_index]
+        delete_query = f"DELETE FROM saved where lvl={lvl} and dex={dex}"
+        print(f"Executing query: {delete_query}")  # Debugging
+        db.run_query(delete_query)
+
+        # Refresh the content after deletion
+        self.refresh_saved_flashcards()
         db.close()
         self.update_flashcard_content()
+
+    def refresh_saved_flashcards(self):
+        global path, current_user
+        db = database_handler(namedb=path)
+        self.content_indexes = db.search2(f"SELECT lvl, dex from saved WHERE username='{current_user}'")
+
+        self.contents = []
+        for i, j in self.content_indexes:
+            content = db.search2(f"SELECT fro, bck from contents where lvl={i} AND dex={j}")
+            self.contents.append(content[0])
+        db.close()
+
+        if self.contents:
+            self.tagalog, self.baybayin = zip(*self.contents)
+            self.flashcard_contents = list(self.tagalog)
+        else:
+            print("No saved cards as of now")
+            self.flashcard_contents = []
+
+    def refresh_saved_flashcards(self):
+        global path, current_user
+        db = database_handler(namedb=path)
+        self.content_indexes = db.search2(f"SELECT lvl, dex from saved WHERE username='{current_user}'")
+
+        self.contents = []
+        for i, j in self.content_indexes:
+            content = db.search2(f"SELECT fro, bck from contents where lvl={i} AND dex={j}")
+            self.contents.append(content[0])
+        db.close()
+
+        if self.contents:
+            self.tagalog, self.baybayin = zip(*self.contents)
+            self.flashcard_contents = list(self.tagalog)
+        else:
+            print("No saved cards as of now")
+            self.flashcard_contents = []
+    # def remove_flashcard(self, *args):
+    #     self.dialog.dismiss()
+    #     global path
+    #     print(
+    #         f"Content Indexes: {self.content_indexes}\nFlashcard Contents: {self.flashcard_contents}\nself.tagalog: {self.tagalog},\nself.baybayin: {self.baybayin}")
+    #     print(f"Current Index: {self.current_card_index}")
+    #
+    #     # Convert tuples to lists
+    #     tagalog_list = list(self.tagalog)
+    #     baybayin_list = list(self.baybayin)
+    #
+    #     # Remove elements from the lists
+    #     del tagalog_list[self.current_card_index]
+    #     del baybayin_list[self.current_card_index]
+    #
+    #     # Convert back to tuples if needed
+    #     self.tagalog = tuple(tagalog_list)
+    #     self.baybayin = tuple(baybayin_list)
+    #
+    #     db = database_handler(path)
+    #     lvl, dex = self.content_indexes[self.current_card_index][0], self.content_indexes[self.current_card_index][1]
+    #     db.run_query(f"DELETE FROM saved where lvl={lvl} and dex={dex}")
+    #     db.close()
+    #     self.update_flashcard_content()
+
     def toggle_star(self):
         if not self.dialog:
             self.dialog = MDDialog(
@@ -467,8 +541,26 @@ class TranslateScreen(MDScreen):
     #ADD ERROR MESSAGE FOR WHEN WORD IS NOT TAGALOG.
     dialog=None
     def translate(self):
-        # self.ids.translation.text=str(self.ids.tbd.text)
-        self.ids.translation.text = str(translate(str(self.ids.tbd.text)))
+        # self.ids.translation.text = str(translate(str(self.ids.tbd.text)))
+        translation = str(translate(str(self.ids.tbd.text)))
+        if translation[:3]=='The':
+            self.ids.translation.text = ''
+            self.show_error_dialog(message=translation)
+            print('trans: ', translation)
+        else:
+            self.ids.translation.text = translation
+
+    def show_error_dialog(self,message):
+        self.dialog = MDDialog(
+            text=message,
+            size_hint=(0.8, 0.2)
+        )
+        self.dialog.open()
+        Clock.schedule_once(self.dismiss_dialog, 1)  # Schedule to dismiss after 1 second
+
+    def dismiss_dialog(self, dt):
+        self.dialog.dismiss()
+
 
     def dismiss_popup(self,dt):
         self.dialog.dismiss()
@@ -565,24 +657,6 @@ class NetworkScreen(MDScreen):
             posts_data = {i + 1: post for i, post in enumerate(result['data'])}
             self.card_list.update_posts(posts_data)
 
-    # def on_enter(self, *args):
-    #     global current_user
-    #     self.token = self.generate_token(current_user)
-    #     print("Generated Token:", self.token)
-    #
-    #     encoded_data = json.dumps(
-    #         {'token': self.token})
-    #     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-    #     UrlRequest('http://127.0.0.1:5000/protected', method='POST', on_success=self.on_posts_fetched,
-    #                req_body=encoded_data, req_headers=headers)
-
-    # def on_posts_fetched(self, request, result):
-    #     #SAMPLE RESULT OUTPUT:
-    #     #{'data': [['sometitle', 'somecontent', 'Nov-28-2023', 'user811']], 'success': True}
-    #     if result['success']:
-    #         posts_data = {i + 1: post for i, post in enumerate(result['data'])}
-    #         self.card_list.update_posts(posts_data)
-
     def create_post(self,instance):
         self.manager.current = "CreatePostScreen"
 
@@ -595,100 +669,6 @@ class NetworkScreen(MDScreen):
         # expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # 1-hour validity
         token = jwt.encode({'username': username, 'exp': expiration}, secret_key, algorithm='HS256')
         return token
-
-# class NetworkScreen(MDScreen):
-#     def __init__(self, **kwargs):
-#         super(NetworkScreen, self).__init__(**kwargs)
-#         self.card_list = CardList(network_screen=self)
-#
-#         # FONTS
-#         LabelBase.register(name='Helvetica', fn_regular='fonts/HelveticaNeue-01.ttf',
-#                            fn_bold='fonts/HelveticaNeue-Bold-02.ttf',
-#                            fn_bolditalic='fonts/HelveticaNeue-BoldItalic-04.ttf',
-#                            fn_italic='fonts/HelveticaNeue-Italic-03.ttf')
-#
-#         # Main layout
-#         main_layout = BoxLayout(orientation='vertical',spacing=50)
-#
-#         # Upper bar
-#         upper_bar = BoxLayout(orientation='horizontal', size_hint_y=0.10)
-#
-#         back_arrow = MDIconButton(icon='images/arrow_back.png',pos_hint={'center_x': 0.2, 'center_y': 0.5})
-#         back_arrow.bind(on_release=self.backtohome)
-#
-#         logo_image = Image(source='images/logo_b.png', size_hint=(None, None), size=(dp(220), dp(220)),
-#                            allow_stretch=True, pos_hint={"center_y": 0.5}, size_hint_y=0.7, opacity=0.7)
-#         title = MDLabel(text='BaiNet', font_name='Helvetica', bold=True, font_size=dp(90))
-#
-#         upper_bar.add_widget(back_arrow)
-#         upper_bar.add_widget(logo_image)
-#         upper_bar.add_widget(title)
-#
-#
-#
-#         #CONTENT
-#         content_layout = BoxLayout(orientation='vertical', size_hint=(0.9, 0.8),
-#                                    pos_hint={'center_x': 0.5, 'center_y': 0.5}, spacing=40, padding=[0, 30, 20, 0])
-#         create_post_button = MDFlatButton(text='Create post', md_bg_color=(1, 0.19, 0.76, 1),
-#                                           size_hint_x=1.0, size_hint_y=0.05,
-#                                           font_name='Helvetica')
-#         create_post_button.bind(on_release=self.create_post)
-#
-#
-#
-#         # super(NetworkScreen, self).__init__(**kwargs)
-#         # Register fonts here if needed, or better, do it in the build method of your app
-#         scroll_view = ScrollView(size_hint=(0.8, None), size=(Window.width, Window.height),
-#                                  pos_hint={"center_x": 0.5, "center_y": 0.5})
-#         # scroll_view.add_widget(CardList(network_screen=self))
-#         scroll_view.add_widget(self.card_list)
-#         posts_scrolls = BoxLayout(size_hint=(1.0, 0.8),spacing=10,orientation='vertical',pos_hint={'center_x':0.5,'center_y':0.5})
-#
-#
-#         content_layout.add_widget(create_post_button)
-#         # content_layout.add_widget(scroll_view)
-#         posts_scrolls.add_widget(scroll_view)
-#         content_layout.add_widget(posts_scrolls)
-#
-#         main_layout.add_widget(upper_bar)
-#         main_layout.add_widget(content_layout)
-#
-#         self.add_widget(main_layout)
-#
-#     def on_enter(self, *args):
-#         global current_user
-#         self.token = self.generate_token(current_user)
-#         print("Generated Token:", self.token)
-#
-#         encoded_data = json.dumps(
-#             {'token': self.token})
-#         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-#         UrlRequest('http://127.0.0.1:5000/protected', method='POST', on_success=self.on_posts_fetched,
-#                    req_body=encoded_data, req_headers=headers)
-#
-#     def on_posts_fetched(self, request, result):
-#         #SAMPLE RESULT OUTPUT:
-#         #{'data': [['sometitle', 'somecontent', 'Nov-28-2023', 'user811']], 'success': True}
-#         if result['success']:
-#             posts_data = {i + 1: post for i, post in enumerate(result['data'])}
-#             self.card_list.update_posts(posts_data)
-#
-#     def create_post(self,instance):
-#         self.manager.current = "CreatePostScreen"
-#
-#     def backtohome(self,instance):
-#         self.manager.current = "HomeScreen"
-#
-#     def generate_token(self,username):
-#         secret_key = "your_secret_key"  # Replace with your actual secret key
-#         expiration = datetime.utcnow() + timedelta(hours=1)
-#         # expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # 1-hour validity
-#         token = jwt.encode({'username': username, 'exp': expiration}, secret_key, algorithm='HS256')
-#         return token
-
-
-from kivy.uix.image import Image
-from kivy.metrics import dp
 
 class CardList(BoxLayout):
     def __init__(self, network_screen,**kwargs):
@@ -828,9 +808,6 @@ class baybai(MDApp):
         network_screen.add_widget(scroll_view)
         screen_manager.add_widget(home_screen)  # Add the HomeScreen to the ScreenManager
         screen_manager.add_widget(learn_screen)
-
-
-
         return Builder.load_file('baybai.kv')
 
 test = baybai()

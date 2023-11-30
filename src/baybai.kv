@@ -1220,33 +1220,37 @@ ScreenManager:
 
 
             #orange_2.2 (NavBar)
-            MDBottomNavigation:
+#            MDBottomNavigation:
+            MDBoxLayout:
                 size_hint_y:0.15
                 panel_color: 'white'
+                orientation: 'horizontal'
 
-                MDBottomNavigationItem:
+                MDIconButton:
                     name: 'home'
                     text: 'Home'
-#                    icon:'images/icon-home.png'
-                    icon:'home'
+                    icon:'images/icon-filled-home.png'
+#                    icon:'home'
                     size_hint_x:0.38
-                    md_bg_color:'black'
+#                    md_bg_color:'black'
                     BoxLayout:
                         orientation:'vertical'
 
-                MDBottomNavigationItem:
+                MDIconButton:
                     name: 'network'
                     text: 'Network'
                     icon: 'images/icon-network.png'
-                    size_hint_x:0.38
-                    on_tab_touch_down:root.home2net()
+                    size_hint_x:0.4
+#                    on_tab_touch_down:root.home2net()
+                    on_release: root.home2net()
 
-                MDBottomNavigationItem:
+#                MDBottomNavigationItem:
+                MDIconButton
                     name: 'log-out'
                     text: 'Sign out'
                     icon: 'images/icon-log-out.png'
                     size_hint_x:0.38
-                    on_tab_touch_down:root.logout()
+                    on_release:root.logout()
 
 
 
