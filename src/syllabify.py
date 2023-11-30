@@ -107,8 +107,7 @@ def syllabify(wordToSyllabify):
 
 
 def checkConsonant(x):
-    if (x == 'a' or x == 'e' or
-            x == 'i' or x == 'o' or x == 'u'):
+    if (x == 'a' or x == 'e' or x == 'i' or x == 'o' or x == 'u'):
         return False
     else:
         return True
@@ -141,10 +140,5 @@ def translate(word:str):
                 if j in ['o', 'u']:
                     baybayin+=letra[pantig[0]][3]
         else:
-            baybayin=f"The letter {pantig[0]} is not in the Tagalog alphabet. Before transcripting a word to Baybayin, please make sure to translate the word to Tagalog first."
+            baybayin=f"The character '{pantig[0]}' is not in the Tagalog alphabet. Before transcripting a word to Baybayin, please make sure to translate the word to Tagalog first."
     return baybayin
-
-# #test on: bakit, basta
-#z=translate('nakakapagpabagabag')
-z=translate('lunes')
-print(z)
