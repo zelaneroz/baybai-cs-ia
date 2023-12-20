@@ -32,8 +32,8 @@ from kivymd.uix.list import MDList
 from datetime import datetime, timedelta
 
 
-path = 'baybai.db'
 current_user = ""
+path = 'baybai.db'
 class database_handler:
     def __init__(self,namedb:str):
         self.connection = sqlite3.Connection(namedb)
@@ -44,6 +44,7 @@ class database_handler:
         self.connection.commit()
     def close(self):
         self.connection.close()
+
     def search(self,query:str):
         result = self.cursor.execute(query).fetchall()
         return [item[0] for item in result]
@@ -186,8 +187,6 @@ class HomeScreen(MDScreen):
         self.manager.current = "SavedScreen"
     def home2translate(self):
         self.manager.current = "TranslateScreen"
-    def home2stats(self):
-        self.manager.current = "StatsScreen"
     def home2net(self):
         self.manager.current = "NetworkScreen"
     def logout(self):
@@ -210,13 +209,14 @@ class HomeScreen(MDScreen):
             )
         self.dialog.open()
 
+    def close_dialog(self, *args):
+        self.dialog.dismiss()
+
     def actual_logout(self,instance=None):
         self.update_current_user("")
         self.manager.current = "IntroScreen"
         self.close_dialog()
 
-    def close_dialog(self, *args):
-        self.dialog.dismiss()
 
     def update_current_user(self,user):
         global current_user
@@ -272,6 +272,7 @@ class Learn_1_1_Screen(MDScreen):
         self.saved_cards = []
 
     def on_enter(self, *args):
+        self.update_flashcard_content()
         global label_text
         global level
         global path
@@ -285,9 +286,6 @@ class Learn_1_1_Screen(MDScreen):
         self.is_tagalog = True  # Initially showing Tagalog
         self.starred_states = [False] * len(self.tagalog)  # Initialize starred states for each card
         self.update_flashcard_content()
-
-    def backtohome(self):
-        baybai.backtohome(self)
 
 
     def next_card(self):
@@ -678,9 +676,8 @@ class NetworkScreen(MDScreen):
         self.manager.current = "HomeScreen"
 
     def generate_token(self,username):
-        secret_key = "your_secret_key"  # Replace with your actual secret key
+        secret_key = "your_secret_key"
         expiration = datetime.utcnow() + timedelta(hours=1)
-        # expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # 1-hour validity
         token = jwt.encode({'username': username, 'exp': expiration}, secret_key, algorithm='HS256')
         return token
 
@@ -784,7 +781,6 @@ class CreatePostScreen(MDScreen):
         timestamp = datetime.now().strftime("%b-%d-%Y")
         title,content = self.ids.post_title.text, self.ids.post_content.text
         self.ids.post_title.text, self.ids.post_content.text = "",""
-        # username='dummy'
         global current_user
         encoded_data = json.dumps({'title': title, 'content': content,'timestamp':timestamp,'username':current_user})
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}

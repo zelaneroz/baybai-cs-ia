@@ -38,10 +38,7 @@ def upload_post():
 
     try:
         payload = jwt.decode(token, 'your_secret_key', algorithms=['HS256'])
-        # Perform your logic here
-        # e.g., you might want to return some user-specific data based on the token
-
-        # Return success response (could include the decoded payload or other data)
+        # SOME LOGIC
         return jsonify({'success': True, 'data': payload}), 200
 
     except jwt.ExpiredSignatureError:
