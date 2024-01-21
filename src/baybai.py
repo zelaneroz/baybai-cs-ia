@@ -191,7 +191,6 @@ class HomeScreen(MDScreen):
         self.manager.current = "NetworkScreen"
     def logout(self):
         self.dialog = None
-        print("logout triggered")
         if not self.dialog:
             self.dialog = MDDialog(
                 title='Sign Out',
@@ -213,6 +212,7 @@ class HomeScreen(MDScreen):
         self.dialog.dismiss()
 
     def actual_logout(self,instance=None):
+        # NetworkScreen.blacklist_token()
         self.update_current_user("")
         self.manager.current = "IntroScreen"
         self.close_dialog()
@@ -672,14 +672,15 @@ class NetworkScreen(MDScreen):
     def create_post(self,instance):
         self.manager.current = "CreatePostScreen"
 
-    def backtohome(self,instance):
-        self.manager.current = "HomeScreen"
 
     def generate_token(self,username):
         secret_key = "your_secret_key"
         expiration = datetime.utcnow() + timedelta(hours=1)
         token = jwt.encode({'username': username, 'exp': expiration}, secret_key, algorithm='HS256')
         return token
+
+    def backtohome(self,instance):
+        self.manager.current = "HomeScreen"
 
 class CardList(BoxLayout):
     def __init__(self, network_screen,**kwargs):
