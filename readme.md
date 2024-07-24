@@ -1,5 +1,7 @@
 # CS IA | Baybai: a Baybayin script learning app
 
+**PLEASE DOWNLOAD ZELAN.IA FOR ACTUAL VERSION SUBMITTED TO THE IB**
+
 
 # Criteria A: Planning
 ## Problem Definition
