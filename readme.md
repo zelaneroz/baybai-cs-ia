@@ -1,4 +1,5 @@
 # Baybai - Baybayin Script Learning App
+*This project was submitted as part of the requirements for completion for Computer Science HL May 2024 for the International Baccalaureate Diploma. Ma*
 
 Baybai is a mobile application designed to teach and revive **Baybayin**, the pre-colonial writing system of the Philippines. The app provides a comprehensive learning experience for students and enthusiasts of the Baybayin script, featuring flashcards, a translator, and a social network for collaborative learning. The application was developed using Python, KivyMD, and SQLite.
 
