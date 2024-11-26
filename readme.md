@@ -47,6 +47,10 @@ The development of the Baybai app used the following coding techniques:
 
 ## System Design
 
+## User Interface
+I designed this on Adobe XD
+![Screenshot 2024-11-26 at 2 06 00 AM](https://github.com/user-attachments/assets/65de61d9-c312-4689-9307-ee3c122581e1)
+
 ### System Diagram
 ![System Diagram](assets/system_diagram.png)
 _The system architecture of the Baybai mobile app._
